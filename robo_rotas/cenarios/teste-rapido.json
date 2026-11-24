@@ -1,0 +1,37 @@
+{
+ "nome": "teste-rapido",
+ "titulo": "Teste rápido: 3 motoboys, 4 pedidos de uma vez",
+ "descricao": "Quatro pedidos chegam juntos em ruas de bairros diferentes, com 3 motoboys na loja. Serve para ver a regra de um pedido por motoboy e quem fica esperando.",
+ "motoboys": 3,
+ "pedidos": [
+  {
+   "t": 0,
+   "canal": "iFood Burguer",
+   "num": "4821",
+   "endereco": "Rua Coronel Rennó",
+   "tipo": "lanche"
+  },
+  {
+   "t": 0,
+   "canal": "Zé",
+   "num": "7710",
+   "endereco": "Avenida BPS",
+   "tipo": "uma caixa de litrão"
+  },
+  {
+   "t": 1,
+   "canal": "iFood Marmita",
+   "num": "0193",
+   "endereco": "Rua Vereador José Lino da Costa",
+   "tipo": "marmita"
+  },
+  {
+   "t": 2,
+   "canal": "Zé",
+   "num": "7713",
+   "endereco": "Rua Antônio Simão Mauad",
+   "bairro": "Centro",
+   "tipo": "poucas latas"
+  }
+ ]
+}

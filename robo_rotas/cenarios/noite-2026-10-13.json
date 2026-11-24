@@ -1,0 +1,405 @@
+{
+ "nome": "noite-2026-10-13",
+ "titulo": "Noite real: terça 13/10 (46 entregas)",
+ "descricao": "Os pedidos de entrega da casa de terça, 13/10/2026, na hora em que chegaram. Naquela noite 3 pessoas diferentes entregaram pedido do Zé. Bairro do Zé sorteado pela frequência real (o relatório dele não diz o bairro).",
+ "motoboys": 3,
+ "inicio": "17:17",
+ "pedidos": [
+  {
+   "t": 0.0,
+   "canal": "iFood Burguer",
+   "num": "4398",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 16.5
+  },
+  {
+   "t": 27.7,
+   "canal": "iFood Burguer",
+   "num": "8711",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 13.4
+  },
+  {
+   "t": 45.6,
+   "canal": "iFood Burguer",
+   "num": "6836",
+   "bairro": "Varginha",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 8.3
+  },
+  {
+   "t": 73.2,
+   "canal": "iFood Burguer",
+   "num": "7871",
+   "bairro": "Cruzeiro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 24.3
+  },
+  {
+   "t": 89.0,
+   "canal": "Zé",
+   "num": "8171",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": true,
+   "tipo": "fardo ou garrafas"
+  },
+  {
+   "t": 93.8,
+   "canal": "Zé",
+   "num": "3478",
+   "bairro": "Nossa Senhora da Agonia",
+   "bairro_sorteado": true,
+   "tipo": "fardo ou garrafas"
+  },
+  {
+   "t": 122.0,
+   "canal": "iFood Burguer",
+   "num": "9425",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 21.2
+  },
+  {
+   "t": 128.9,
+   "canal": "iFood Marmita",
+   "num": "456",
+   "bairro": "Centro",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  },
+  {
+   "t": 132.8,
+   "canal": "iFood Burguer",
+   "num": "2563",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 8.8
+  },
+  {
+   "t": 154.3,
+   "canal": "iFood Marmita",
+   "num": "7074",
+   "bairro": "Centro",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  },
+  {
+   "t": 159.7,
+   "canal": "iFood Burguer",
+   "num": "8836",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 15.3
+  },
+  {
+   "t": 160.1,
+   "canal": "iFood Burguer",
+   "num": "8559",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 15.3
+  },
+  {
+   "t": 170.2,
+   "canal": "iFood Burguer",
+   "num": "9149",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche"
+  },
+  {
+   "t": 170.3,
+   "canal": "iFood Burguer",
+   "num": "2160",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 19.5
+  },
+  {
+   "t": 171.8,
+   "canal": "iFood Burguer",
+   "num": "9415",
+   "bairro": "Boa Vista",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 15.0
+  },
+  {
+   "t": 171.8,
+   "canal": "iFood Burguer",
+   "num": "6202",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 15.0
+  },
+  {
+   "t": 171.9,
+   "canal": "iFood Burguer",
+   "num": "8728",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 15.5
+  },
+  {
+   "t": 178.3,
+   "canal": "iFood Burguer",
+   "num": "3549",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 12.9
+  },
+  {
+   "t": 185.3,
+   "canal": "iFood Burguer",
+   "num": "4975",
+   "bairro": "Lot. Costa",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 16.0
+  },
+  {
+   "t": 186.3,
+   "canal": "iFood Marmita",
+   "num": "2541",
+   "bairro": "Centro",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  },
+  {
+   "t": 186.9,
+   "canal": "iFood Burguer",
+   "num": "4184",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 23.2
+  },
+  {
+   "t": 207.6,
+   "canal": "iFood Burguer",
+   "num": "6550",
+   "bairro": "Boa Vista",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 26.9
+  },
+  {
+   "t": 209.5,
+   "canal": "iFood Burguer",
+   "num": "2495",
+   "bairro": "Cruzeiro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 25.8
+  },
+  {
+   "t": 209.6,
+   "canal": "Zé",
+   "num": "0332",
+   "bairro": "Avenida",
+   "bairro_sorteado": true,
+   "tipo": "poucas latas"
+  },
+  {
+   "t": 211.0,
+   "canal": "iFood Marmita",
+   "num": "2048",
+   "bairro": "Varginha",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  },
+  {
+   "t": 211.1,
+   "canal": "iFood Burguer",
+   "num": "9616",
+   "bairro": "Oriente",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 20.7
+  },
+  {
+   "t": 212.4,
+   "canal": "iFood Marmita",
+   "num": "9936",
+   "bairro": "Rebourgeon",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  },
+  {
+   "t": 224.7,
+   "canal": "Zé",
+   "num": "5654",
+   "bairro": "Centro",
+   "bairro_sorteado": true,
+   "tipo": "poucas latas"
+  },
+  {
+   "t": 226.2,
+   "canal": "iFood Burguer",
+   "num": "1057",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 36.2
+  },
+  {
+   "t": 235.4,
+   "canal": "Zé",
+   "num": "1615",
+   "bairro": "Centro",
+   "bairro_sorteado": true,
+   "tipo": "fardo ou garrafas"
+  },
+  {
+   "t": 235.6,
+   "canal": "iFood Marmita",
+   "num": "8430",
+   "bairro": "Varginha",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  },
+  {
+   "t": 265.7,
+   "canal": "iFood Marmita",
+   "num": "8961",
+   "bairro": "Varginha",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  },
+  {
+   "t": 288.4,
+   "canal": "iFood Burguer",
+   "num": "5378",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 32.0
+  },
+  {
+   "t": 294.8,
+   "canal": "iFood Marmita",
+   "num": "1068",
+   "bairro": "Nossa Senhora da Agonia",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  },
+  {
+   "t": 314.8,
+   "canal": "iFood Marmita",
+   "num": "7606",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  },
+  {
+   "t": 315.8,
+   "canal": "Zé",
+   "num": "1283",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": true,
+   "tipo": "poucas latas"
+  },
+  {
+   "t": 317.9,
+   "canal": "iFood Burguer",
+   "num": "3001",
+   "bairro": "Nossa Senhora da Agonia",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 19.6
+  },
+  {
+   "t": 319.5,
+   "canal": "iFood Burguer",
+   "num": "4017",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 19.6
+  },
+  {
+   "t": 323.8,
+   "canal": "iFood Burguer",
+   "num": "5817",
+   "bairro": "Varginha",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 21.7
+  },
+  {
+   "t": 323.9,
+   "canal": "iFood Burguer",
+   "num": "2080",
+   "bairro": "Nossa Senhora da Agonia",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 18.6
+  },
+  {
+   "t": 329.4,
+   "canal": "Zé",
+   "num": "7909",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": true,
+   "tipo": "poucas latas"
+  },
+  {
+   "t": 352.0,
+   "canal": "iFood Burguer",
+   "num": "9028",
+   "bairro": "Centro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 20.1
+  },
+  {
+   "t": 369.1,
+   "canal": "iFood Burguer",
+   "num": "1266",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 23.8
+  },
+  {
+   "t": 370.0,
+   "canal": "iFood Burguer",
+   "num": "1044",
+   "bairro": "Pinheirinho",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 24.8
+  },
+  {
+   "t": 384.1,
+   "canal": "iFood Burguer",
+   "num": "8327",
+   "bairro": "Cruzeiro",
+   "bairro_sorteado": false,
+   "tipo": "lanche",
+   "preparo": 23.2
+  },
+  {
+   "t": 394.6,
+   "canal": "iFood Marmita",
+   "num": "6471",
+   "bairro": "Porto Velho",
+   "bairro_sorteado": true,
+   "tipo": "marmita"
+  }
+ ]
+}

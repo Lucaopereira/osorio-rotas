@@ -1,0 +1,5 @@
+# O Caddy pede o certificado HTTPS sozinho (Let's Encrypt) e passa tudo para o servidor da tela.
+{$DOMINIO} {
+	encode gzip
+	reverse_proxy 127.0.0.1:8080
+}

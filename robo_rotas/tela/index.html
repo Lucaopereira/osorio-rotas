@@ -1,0 +1,949 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Waisorio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Tela de despacho da loja: cabeçalho fixo com a contagem, depois as saídas por motoboy (cor = motoboy, linha = pedidos que vão juntos) e quem está na rua. */
+:root {
+  --bg: #eef1f4; --card: #ffffff; --ink: #141920; --muted: #5a6472; --line: #d8dde4; --soft: #f5f7f9;
+  --ok: #17703f; --ok-bg: #dff2e6; --warn: #8a5a0b; --warn-bg: #fbedd2; --late: #b4232b; --late-bg: #fbe1e2;
+  --gelo: #0b5c86; --gelo-bg: #dcf0fa; --btn: #141920; --btn-ink: #ffffff; --pin-ink: #ffffff; --logo: #141920;
+  --m0: #2459d6; --m1: #b0249f; --m2: #0b8579; --m3: #d4520b; --m4: #6d3fd6; --m5: #2f7d16; --m6: #cc1f4a; --m7: #0a6aa0;
+  --c-burger: #d0302f; --c-marmita: #e06d0b; --c-ze: #f0c000; --c-ze-ink: #2a2300; --c-kibon: #1d7fd6;
+  --c-site: #6a2a9a; --c-anota: #2e7d32; --c-p: #5f6368; --c-bebidas: #0f766e;
+  --f-txt: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-tit: "Space Grotesk", "Inter", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1216; --card: #181c22; --ink: #e8ecf1; --muted: #9aa4b1; --line: #2b313a; --soft: #13171c;
+    --ok: #5fd08f; --ok-bg: #16331f; --warn: #f0b75a; --warn-bg: #3a2c12; --late: #ff7a80; --late-bg: #3f1b1e;
+    --gelo: #7cc8ef; --gelo-bg: #10303f; --btn: #e8ecf1; --btn-ink: #0f1216; --pin-ink: #0f1216; --logo: #ffffff;
+    --m0: #6c9bff; --m1: #e57af0; --m2: #3cc9b9; --m3: #ff8f4d; --m4: #a98bff; --m5: #6fd06f; --m6: #ff6b8b; --m7: #4fb3e8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1216; --card: #181c22; --ink: #e8ecf1; --muted: #9aa4b1; --line: #2b313a; --soft: #13171c;
+  --ok: #5fd08f; --ok-bg: #16331f; --warn: #f0b75a; --warn-bg: #3a2c12; --late: #ff7a80; --late-bg: #3f1b1e;
+  --gelo: #7cc8ef; --gelo-bg: #10303f; --btn: #e8ecf1; --btn-ink: #0f1216; --pin-ink: #0f1216; --logo: #ffffff;
+  --m0: #6c9bff; --m1: #e57af0; --m2: #3cc9b9; --m3: #ff8f4d; --m4: #a98bff; --m5: #6fd06f; --m6: #ff6b8b; --m7: #4fb3e8;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 17px/1.35 var(--f-txt); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main.wrap { padding-block: 4px 40px; }
+.topo { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topo .wrap { padding-block: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.topo h1 { margin: 0; font: 700 26px/1.1 var(--f-tit); letter-spacing: -0.02em; }
+.topo h1 span { color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+.contas { display: flex; gap: 8px; flex-wrap: wrap; }
+.conta { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 15px; }
+.conta b { font-size: 18px; margin-right: 4px; font-variant-numeric: tabular-nums; }
+.aviso { margin: 14px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--warn-bg); color: var(--warn); font-size: 15px; }
+.aviso.ruim { background: var(--late-bg); color: var(--late); font-weight: 600; }
+.anotados { margin: 14px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--ok-bg); color: var(--ok); font-size: 15px; }
+.anotados ul { margin: 4px 0 0; padding-left: 18px; }
+.motos { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; align-items: center; }
+.moto { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 5px 6px 5px 12px; font-size: 15px; }
+.moto b { font: 700 17px var(--f-tit); }
+.moto .onde { color: var(--muted); }
+.entrou { display: flex; gap: 6px; align-items: center; }
+.entrou input { font: inherit; font-size: 15px; width: 150px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); flex: none; }
+h2 { font: 700 13px var(--f-txt); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 26px 0 10px; display: flex; align-items: center; gap: 8px; }
+h2 .qtd { background: var(--ink); color: var(--bg); border-radius: 999px; padding: 1px 8px; font-size: 13px; letter-spacing: 0; }
+.grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 12px; align-items: start; }
+.saida { background: var(--card); border: 1px solid var(--line); border-left: 8px solid var(--c); border-radius: 14px; padding: 14px 14px 12px; min-width: 0; }
+.saida.agora { box-shadow: 0 0 0 2px var(--c) inset; }
+.saida header { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin-bottom: 8px; }
+.saida h3 { margin: 0; font: 700 23px var(--f-tit); }
+.badge { font-size: 13px; font-weight: 700; letter-spacing: 0.03em; border-radius: 6px; padding: 3px 8px; }
+.badge.agora { background: var(--ok); color: var(--card); }
+.badge.espera { background: var(--warn-bg); color: var(--warn); }
+.badge.depois { background: var(--soft); color: var(--muted); border: 1px solid var(--line); }
+.volta { margin-left: auto; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.gelo { background: var(--gelo-bg); color: var(--gelo); border-radius: 8px; padding: 8px 10px; font-weight: 700; font-size: 15px; margin: 4px 0 8px; }
+ol.rota { list-style: none; margin: 0; padding: 0; }
+ol.rota li { position: relative; display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 6px 0 10px; }
+ol.rota li + li::before { content: ""; position: absolute; left: 15px; top: -14px; height: 22px; width: 4px; border-radius: 2px; background: var(--c); }
+.n { width: 34px; height: 34px; border-radius: 50%; background: var(--c); color: var(--card); font-weight: 800; display: grid; place-items: center; font-size: 17px; position: relative; z-index: 1; }
+.l1 { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.canal { font-size: 13px; font-weight: 800; border-radius: 5px; padding: 2px 7px; color: #ffffff; background: var(--c-p); }
+.canal.iFood-B { background: var(--c-burger); } .canal.iFood-M { background: var(--c-marmita); }
+.canal.Ze { background: var(--c-ze); color: var(--c-ze-ink); } .canal.iFood-K { background: var(--c-kibon); }
+.canal.CW-B, .canal.CW-M { background: var(--c-site); } .canal.Anota { background: var(--c-anota); }
+.num { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.num small { font-size: 16px; font-weight: 500; color: var(--muted); }
+.l2 { color: var(--muted); font-size: 15px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.l2 .semb { color: var(--warn); }
+.st { font-size: 13px; font-weight: 700; border-radius: 6px; padding: 3px 7px; white-space: nowrap; margin-top: 4px; }
+.st.ok { background: var(--ok-bg); color: var(--ok); } .st.late { background: var(--late-bg); color: var(--late); }
+.acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+button { font: inherit; cursor: pointer; border-radius: 9px; border: 1px solid var(--line); background: var(--soft); color: var(--ink); padding: 8px 14px; font-size: 15px; font-weight: 600; }
+button.forte { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+button.pouco { padding: 4px 9px; font-size: 13px; font-weight: 600; color: var(--muted); }
+button.armado { background: var(--late); border-color: var(--late); color: #ffffff; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--m0); outline-offset: 2px; }
+button:disabled { opacity: 0.5; cursor: default; }
+.vazio { background: var(--card); border: 1px dashed var(--line); border-radius: 14px; padding: 16px; color: var(--muted); }
+.rua { display: grid; gap: 10px; }
+.linha { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; display: grid; grid-template-columns: minmax(110px, 160px) minmax(0, 1fr) auto auto; gap: 6px 14px; align-items: center; }
+.linha .quem { display: flex; align-items: center; gap: 8px; font: 700 18px var(--f-tit); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 8px; padding: 2px 8px 2px 2px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.chip .canal { padding: 1px 6px; }
+.tempo { color: var(--muted); font-size: 15px; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tempo.tarde { color: var(--late); font-weight: 700; }
+.barra { grid-column: 1 / -1; height: 6px; background: var(--soft); border-radius: 3px; overflow: hidden; }
+.barra i { display: block; height: 100%; background: var(--c); }
+.atencao { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px 14px; }
+.atencao ul { margin: 0; padding-left: 18px; }
+.atencao li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.atencao li:last-child { border-bottom: 0; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--btn); color: var(--btn-ink); padding: 10px 16px; border-radius: 10px; font-weight: 600; z-index: 20; max-width: calc(100% - 32px); }
+footer { margin-top: 28px; color: var(--muted); font-size: 14px; }
+.abas { display: flex; gap: 4px; margin-left: auto; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+.abas a { text-decoration: none; color: var(--muted); font-weight: 700; font-size: 15px; padding: 6px 12px; border-radius: 7px; display: flex; align-items: center; gap: 6px; }
+.abas a.ativa { background: var(--btn); color: var(--btn-ink); }
+.abas .alerta { background: var(--late); color: #ffffff; border-radius: 999px; padding: 0 7px; font-size: 12px; }
+.lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 10px; }
+.pessoa { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pessoa b { font: 700 19px var(--f-tit); }
+.pessoa .estado { font-size: 13px; font-weight: 700; border-radius: 6px; padding: 2px 8px; }
+.pessoa .estado.dentro { background: var(--ok-bg); color: var(--ok); }
+.pessoa .estado.fora { background: var(--soft); color: var(--muted); border: 1px solid var(--line); }
+.pessoa .estado.anot { background: var(--warn-bg); color: var(--warn); }
+.pessoa .dir { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+.codigo { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--c-ze); border-radius: 12px; padding: 12px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.codigo code { font: 700 17px ui-monospace, "Cascadia Mono", Consolas, monospace; }
+select { font: inherit; font-size: 15px; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+.cad { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.cad input { font: inherit; font-size: 16px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--card); color: var(--ink); width: 220px; max-width: 100%; }
+.dica { color: var(--muted); font-size: 14px; margin: 6px 0 0; }
+.mapa-ctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 14px 0 10px; }
+.mapa-ctl .vao { flex: 1; }
+.mapa-ctl .zoom { display: inline-flex; gap: 6px; flex-wrap: nowrap; }
+.fil { font: inherit; font-size: 14px; font-weight: 700; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 5px 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.fil.ativo { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+.fil .pt { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+svg.mapa { display: block; width: 100%; height: auto; background: var(--card); border: 1px solid var(--line); border-radius: 14px; touch-action: none; cursor: grab; }
+svg.mapa text { font-family: var(--f-txt); }
+svg.mapa .fundo { opacity: .95; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) svg.mapa .fundo { filter: invert(.9) hue-rotate(180deg) brightness(.9); } }
+:root[data-theme="dark"] svg.mapa .fundo { filter: invert(.9) hue-rotate(180deg) brightness(.9); }
+svg.mapa .pino { cursor: pointer; }
+svg.mapa .pino:focus-visible circle.borda { stroke: var(--ink); stroke-width: 3; }
+.info-pino { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--c); border-radius: 12px; padding: 10px 14px; margin-top: 10px; }
+.trajetos { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.trajetos li { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.trajetos .pt { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex: none; align-self: center; }
+.quadro { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 14px; align-items: start; }
+@media (max-width: 960px) { .quadro { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .quadro { grid-template-columns: minmax(0, 1fr); } }
+.col { background: var(--soft); border: 1px solid var(--line); border-radius: 14px; padding: 10px; min-height: 110px; display: grid; gap: 8px; align-content: start; }
+.col > h3 { margin: 0; font: 700 17px var(--f-tit); display: flex; gap: 8px; align-items: center; }
+.col.alvo, .caixa.alvo { outline: 3px dashed var(--ink); outline-offset: 2px; }
+.cartao { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
+.cartao.sel { outline: 3px solid var(--ink); outline-offset: 1px; }
+.cartao.sugerido { border-style: dashed; border-width: 2px; }
+.cartao .l1 { display: flex; gap: 6px; align-items: center; font-weight: 700; flex-wrap: wrap; }
+.cartao .l2 { color: var(--muted); font-size: 14px; }
+.cartao .sug { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+.cartao .sug .pt, .caixa .pt { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+.caixa { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--c); border-radius: 12px; padding: 8px; display: grid; gap: 6px; }
+.caixa > header { display: flex; align-items: center; gap: 6px 8px; flex-wrap: wrap; }
+.caixa > header b { font: 700 17px var(--f-tit); }
+.caixa > header .onde { color: var(--muted); font-size: 13px; }
+.caixa > header .cont { margin-left: auto; color: var(--muted); font-size: 13px; font-weight: 700; }
+.caixa .vaga { border: 1px dashed var(--line); border-radius: 8px; padding: 8px; color: var(--muted); font-size: 13px; text-align: center; }
+.caixa .sugere { font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.pausados { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 10px; padding: 8px; border: 1px dashed var(--line); border-radius: 8px; }
+.pausados b { font-size: 14px; color: var(--muted); margin-right: 4px; }
+.grupo-rua { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--c); border-radius: 10px; padding: 8px 10px; }
+.grupo-rua .chips { margin-top: 6px; }
+.grupo-ifood { border: 1px solid var(--line); border-left: 6px solid var(--c-burger); border-radius: 10px; padding: 8px 10px; display: grid; gap: 6px; }
+.grupo-ifood .trava-txt { margin-left: 8px; font-size: 13px; color: var(--muted); }
+.cartao.trava { cursor: default; background: var(--soft); }
+.tag-ifood { font-size: 12px; font-weight: 700; letter-spacing: 0.03em; border-radius: 6px; padding: 1px 6px; background: var(--c-burger); color: #fff; }
+.canal.iFood-D { background: var(--c-burger); }
+.fantasma { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 30; opacity: .92; box-shadow: 0 10px 28px rgba(0, 0, 0, .28); cursor: grabbing; }
+.barra-mover { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; background: var(--card); border-top: 1px solid var(--line); box-shadow: 0 -6px 18px rgba(0, 0, 0, .12); padding: 10px max(16px, env(safe-area-inset-left, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.barra-mover .rot { font-weight: 700; margin-right: 4px; }
+main.com-barra { padding-bottom: 150px; }
+.logo { display: inline-block; width: 96px; height: 28px; margin-right: 10px; vertical-align: -5px; background: var(--logo);
+  -webkit-mask: url(logo_osorio.png) center / contain no-repeat; mask: url(logo_osorio.png) center / contain no-repeat; }
+@media (max-width: 560px) { .logo { width: 78px; height: 23px; margin-right: 8px; } }
+@media (max-width: 560px) {
+  .linha { grid-template-columns: minmax(0, 1fr) auto; }
+  .linha .chips { grid-column: 1 / -1; grid-row: 2; }
+  .linha .tempo { text-align: left; }
+  .topo h1 { font-size: 22px; }
+}
+/* Aba Painel (14/11 ~21h): colunas como o Gestor do iFood; cada moldura é um motoboy, 🔗 = pedidos que vão juntos */
+.painel { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 12px; align-items: start; }
+@media (max-width: 1100px) { .painel { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .painel { grid-template-columns: minmax(0, 1fr); } }
+.pcol { background: var(--soft); border: 1px solid var(--line); border-radius: 14px; padding: 10px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.pcol > h3 { margin: 0; font: 700 17px var(--f-tit); display: flex; gap: 8px; align-items: center; }
+.pcol > h3 .qtd { background: var(--ink); color: var(--bg); border-radius: 999px; padding: 1px 8px; font-size: 13px; }
+.pvazio { color: var(--muted); font-size: 14px; border: 1px dashed var(--line); border-radius: 10px; padding: 10px; }
+.mold { border: 2px dashed var(--c, var(--line)); border-radius: 12px; padding: 7px; background: var(--card); display: grid; gap: 7px; min-width: 0; }
+.mold.fixo, .mold.rua { border-style: solid; }
+.mold.fixo > header, .mold.rua > header { background: color-mix(in srgb, var(--c) 14%, transparent); border-radius: 8px; padding: 3px 6px; }
+.mold.sem, .mold.trava { --c: var(--line); }
+.mold.trava { border-style: solid; background: var(--soft); }
+.mold > header { display: flex; align-items: center; gap: 3px 7px; flex-wrap: wrap; font-size: 14px; }
+.mold > header b { font: 700 17px var(--f-tit); }
+.mold > header .q { color: var(--muted); }
+.mold > header .q.late { color: var(--late); font-weight: 700; }
+.mold > header .ja { background: var(--ok); color: var(--card); font-weight: 800; letter-spacing: .03em; border-radius: 6px; padding: 1px 7px; font-size: 13px; }
+.mold > header .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 0 5px; margin-left: auto; }
+.pcs { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 6px; }
+.pc { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; text-align: center; display: grid; align-content: start; min-width: 0; }
+.pc[data-vai] { cursor: pointer; }
+.pc[data-vai]:hover { border-color: var(--muted); }
+.pc[data-vai]:focus-visible { outline: 3px solid var(--m0); outline-offset: 1px; }
+.pc.feito { opacity: .55; }
+.pc-canal { font-size: 13px; font-weight: 800; color: #ffffff; background: var(--c-p); padding: 3px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-canal small { font-size: 11px; font-weight: 600; opacity: .9; }
+.pc-canal.iFood-B, .pc-canal.CW-B { background: var(--c-burger); } .pc-canal.iFood-M, .pc-canal.CW-M { background: var(--c-marmita); }
+.pc-canal.Ze { background: var(--c-ze); color: var(--c-ze-ink); } .pc-canal.iFood-K { background: var(--c-kibon); }
+.pc-canal.iFood-D { background: var(--c-bebidas); } .pc-canal.Anota { background: var(--c-anota); }
+.pc-num { font: 700 27px/1.15 var(--f-tit); font-variant-numeric: tabular-nums; padding: 3px 4px 0; }
+.pc-num .gel { font-size: 15px; margin-left: 2px; vertical-align: 4px; }
+.pc-b { font-size: 13px; color: var(--muted); padding: 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-b.semb { color: var(--warn); }
+.pc-pe { display: grid; justify-items: center; gap: 3px; padding: 4px 4px 7px; }
+.pc-pe .st2 { font-size: 12px; color: var(--muted); line-height: 1.2; }
+.pc-pe .st2.ok { color: var(--ok); font-weight: 700; }
+.pz { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 1px 8px; background: var(--soft); color: var(--muted); border: 1px solid var(--line); }
+.pz.warn { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
+.pz.late { background: var(--late-bg); color: var(--late); border-color: transparent; }
+.pz.ok { background: var(--ok-bg); color: var(--ok); border-color: transparent; }
+@media (max-width: 600px) {
+  .abas { width: 100%; margin-left: 0; }
+  .abas a { flex: 1 1 auto; justify-content: center; padding: 6px 3px; font-size: 13.5px; min-width: 0; }
+  .motos.mini .moto { padding: 3px 9px; font-size: 13px; gap: 5px; }
+  .motos.mini .moto b { font-size: 15px; }
+}
+@media (prefers-reduced-motion: no-preference) { button { transition: background 0.15s, color 0.15s; } }
+</style>
+
+<div class="topo"><div class="wrap" id="topo"><h1><span class="logo" role="img" aria-label="Osório"></span>Waisorio</h1></div></div>
+<main class="wrap" id="app">
+  <div class="vazio" style="margin-top:16px">Esperando a primeira rodada do agente. Quando ele ler os pedidos do iFood e do Zé, aparecem aqui quem sai com quais pedidos, em ordem, e quem está na rua.</div>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+let D = null, eventos = [], cadastro = [], db = null, armado = null, carregou = false, semRede = false;
+const aba = () => ({"#motoboys": "motoboys", "#mapa": "mapa", "#quadro": "quadro", "#saidas": "despacho"}[location.hash] || "painel");
+const slug = (n) => n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 30);
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;"}[c]));
+const cor = (i) => `--c: var(--m${Number(i) || 0})`;
+const hhmm = () => new Date().toTimeString().slice(0, 5);
+const canalTxt = (p) => `<span class="canal ${esc(p.canal)}" title="${esc(p.nome_canal)}">${esc(p.rotulo)}</span>`;
+const numero = (p) => `<span class="num">${p.num_ini ? `<small>${esc(p.num_ini)}</small>` : ""}${esc(p.num_fim)}</span>`;
+let toastT = null;
+function aviso(txt) { const t = $("toast"); t.textContent = txt; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 3500); }
+
+// botão de dois toques: o 1º arma (fica vermelho com a pergunta), o 2º em até 5 s manda
+function botao(chave, texto, confirma, ev, classe = "forte") {
+  const arm = armado && armado.chave === chave && Date.now() < armado.ate;
+  return `<button class="${arm ? "armado" : classe}" data-chave="${esc(chave)}" data-ev="${esc(JSON.stringify(ev))}" data-confirma="${esc(confirma)}">${esc(arm ? confirma : texto)}</button>`;
+}
+function parada(p, i) {
+  const bairro = p.bairro_ok ? esc(p.bairro) : `<span class="semb">${esc(p.bairro)}</span>`;
+  const chega = p.chega ? ` · chega ~${esc(p.chega)}` : "";
+  const st = p.chega ? (p.atraso ? `<span class="st late">atrasa ${Number(p.atraso)} min</span>` : `<span class="st ok">no prazo</span>`) : "";
+  const peq = p.gelado ? (p.pequeno ? " · pequeno" : "") : "";
+  const btPeq = p.gelado && !p.pequeno ? `<div class="acoes">${botao("peq " + p.ref, "É pequeno (long neck)", "Confirmar: vai em cima da bag", {tipo: "pequeno", ref: p.ref}, "pouco")}</div>` : "";
+  return `<li><span class="n">${i + 1}</span><div><div class="l1">${canalTxt(p)}${numero(p)}</div>
+    <div class="l2">${bairro}${chega} · prazo ${esc(p.prazo)}${peq}</div>${btPeq}</div>${st}</li>`;
+}
+function cartao(s) {
+  const badge = s.quando === "agora" ? `<span class="badge agora">SAI JÁ</span>`
+    : s.quando === "espera" ? `<span class="badge espera">SAI ${esc(s.sai)} · espera o pronto</span>`
+    : `<span class="badge depois">quando voltar (~${esc(s.livre)}) · sai ~${esc(s.sai)}</span>`;
+  const gelo = s.gelado_em_cima ? `<div class="gelo">❄ Bebida no compartimento de cima, separada do lanche</div>` : "";
+  const n = s.paradas.length;
+  const sai = s.quando !== "depois" ? `<div class="acoes">${botao("saiu " + s.moto, `${s.moto} saiu`, `Confirmar: ${s.moto} saiu com ${n} pedido${n > 1 ? "s" : ""}`, {tipo: "saiu", moto: s.moto, pedidos: s.paradas.map((p) => p.ref)})}</div>` : "";
+  return `<article class="saida ${esc(s.quando)}" style="${cor(s.cor)}">
+    <header><span class="dot"></span><h3>${esc(s.moto)}</h3>${badge}<span class="volta">volta ~${esc(s.volta)} · ${Number(s.min)} min</span></header>
+    ${gelo}<ol class="rota">${s.paradas.map(parada).join("")}</ol>${sai}</article>`;
+}
+function grupo(titulo, lista, vazio) {
+  const corpo = lista.length ? `<div class="grade">${lista.map(cartao).join("")}</div>` : (vazio ? `<div class="vazio">${vazio}</div>` : "");
+  return corpo ? `<h2>${titulo}${lista.length ? `<span class="qtd">${lista.length}</span>` : ""}</h2>${corpo}` : "";
+}
+function rua(r) {
+  const chips = r.paradas.map((p) => `<span class="chip">${canalTxt(p)}${esc(p.num_fim)}</span>`).join("");
+  const tempo = r.tarde ? `saiu ${esc(r.saiu)} · passou da hora (volta era ~${esc(r.volta)})` : `saiu ${esc(r.saiu)} → volta ~${esc(r.volta)}`;
+  return `<div class="linha" style="${cor(r.cor)}"><div class="quem"><span class="dot"></span>${esc(r.moto)}</div>
+    <div class="chips">${chips}</div><div class="tempo${r.tarde ? " tarde" : ""}">${tempo}</div>
+    <div>${botao("voltou " + r.moto, "Voltou", `Confirmar: ${r.moto} voltou`, {tipo: "voltou", moto: r.moto})}</div>
+    <div class="barra"><i style="width:${Math.max(0, Math.min(100, Number(r.pct) || 0))}%"></i></div></div>`;
+}
+function descreve(e) {
+  if (e.tipo === "saiu") return `${e.moto} saiu com ${(e.pedidos || []).length} pedido(s)`;
+  if (e.tipo === "voltou") return `${e.moto} voltou`;
+  if (e.tipo === "fora") return `${e.moto} não está na loja`;
+  if (e.tipo === "entrou") return `${e.nome} entrou no turno`;
+  if (e.tipo === "saiu_turno") return `${e.moto} saiu do turno`;
+  if (e.tipo === "pequeno") return `${e.ref} é pequeno`;
+  if (e.tipo === "entregador") return `código ${e.codigo} do Zé é o ${e.moto}`;
+  return e.tipo;
+}
+function topo() {
+  const n = D && Array.isArray(D.ze_sem_nome) ? D.ze_sem_nome.length : 0;
+  const contas = D ? `<div class="contas"><span class="conta"><b>${Number(D.esperando) || 0}</b>pedidos esperando</span>
+    <span class="conta"><b>${Number(D.na_loja) || 0}</b>na loja</span><span class="conta"><b>${Number(D.na_rua) || 0}</b>na rua</span></div>` : "";
+  $("topo").innerHTML = `<h1><span class="logo" role="img" aria-label="Osório"></span>Waisorio <span>${D ? esc(D.agora) : ""}</span></h1>${contas}
+    <nav class="abas" aria-label="Telas"><a href="#painel" class="${aba() === "painel" ? "ativa" : ""}">Painel</a><a href="#saidas" class="${aba() === "despacho" ? "ativa" : ""}">Saídas</a>
+    <a href="#quadro" class="${aba() === "quadro" ? "ativa" : ""}">Quadro</a>
+    <a href="#mapa" class="${aba() === "mapa" ? "ativa" : ""}">Mapa</a>
+    <a href="#motoboys" class="${aba() === "motoboys" ? "ativa" : ""}">Motoboys${n ? `<span class="alerta">${n}</span>` : ""}</a></nav>`;
+}
+const pendentes = () => eventos.filter((e) => (e.criado || 0) > (Number(D && D.eventos_ate) || 0));
+let escolha = {};  // motoboy escolhido para cada código do Zé (sobrevive ao redesenho)
+function abaMotoboys() {
+  const turno = new Set((D && Array.isArray(D.motoboys) ? D.motoboys : []).map((m) => m.nome));
+  const anot = {};
+  for (const e of pendentes().slice().reverse()) {
+    if (e.tipo === "entrou") anot[e.nome] = "entrando no turno";
+    if (e.tipo === "saiu_turno") anot[e.moto] = "saindo do turno";
+  }
+  const cad = new Map(cadastro.map((c) => [c.nome, c.id]));
+  const nomes = [...new Set([...cad.keys(), ...turno])].sort((a, b) => a.localeCompare(b, "pt"));
+  const pessoas = nomes.map((nome) => {
+    const dentro = turno.has(nome);
+    const estado = anot[nome] ? `<span class="estado anot">${esc(anot[nome])}</span>`
+      : `<span class="estado ${dentro ? "dentro" : "fora"}">${dentro ? "no turno" : "fora do turno"}</span>`;
+    const acao = dentro
+      ? botao("turno " + nome, "Tirar do turno", `Confirmar: tirar ${nome}`, {tipo: "saiu_turno", moto: nome}, "")
+      : `<button class="forte" data-um="1" data-ev="${esc(JSON.stringify({tipo: "entrou", nome}))}">Pôr no turno</button>`;
+    const cadBt = cad.has(nome)
+      ? botao("cad " + nome, "apagar do cadastro", "Confirmar: apagar", {acao: "descadastrar", id: cad.get(nome)}, "pouco")
+      : `<button class="pouco" data-cadastrar="${esc(nome)}">cadastrar</button>`;
+    return `<div class="pessoa"><b>${esc(nome)}</b>${estado}<span class="dir">${acao}${cadBt}</span></div>`;
+  }).join("");
+  let h = `<h2>Turno de agora</h2>${nomes.length ? `<div class="lista">${pessoas}</div>` : `<div class="vazio">Ninguém cadastrado ainda. Cadastre os motoboys aqui embaixo.</div>`}
+    <p class="dica">Ponha no turno quando o motoboy chegar. Tire quando ele for embora ou ficar sem moto. Muda na próxima rodada, em até 3 min.</p>`;
+  const cods = D && Array.isArray(D.ze_sem_nome) ? D.ze_sem_nome : [];
+  if (cods.length) {
+    const opcoes = [...turno].sort((a, b) => a.localeCompare(b, "pt"));
+    h += `<h2>Zé: quem retirou?<span class="qtd">${cods.length}</span></h2><div class="rua">${cods.map((c) => {
+      const sel = escolha[c.codigo] || "";
+      const chips = (c.pedidos || []).map((p) => `<span class="chip"><span class="canal Ze">Zé</span>${esc(p)}</span>`).join("");
+      return `<div class="codigo">${chips}<span>código <code>${esc(c.codigo)}</code></span>
+        <select data-codigo="${esc(c.codigo)}" aria-label="Motoboy que retirou"><option value="">Quem é?</option>${opcoes.map((o) => `<option${o === sel ? " selected" : ""}>${esc(o)}</option>`).join("")}</select>
+        ${sel ? botao("cod " + c.codigo, "É este", `Confirmar: é o ${sel}`, {tipo: "entregador", codigo: c.codigo, moto: sel}) : ""}</div>`;
+    }).join("")}</div><p class="dica">Cada motoboy tem um código no Zé. Depois de ligar uma vez, o Zé já diz sozinho quem saiu.</p>`;
+  }
+  h += `<h2>Cadastrar motoboy</h2><div class="cad"><input id="novo" placeholder="Primeiro nome ou apelido" maxlength="30" aria-label="Primeiro nome ou apelido do motoboy"><button id="cadastrar" class="forte">Cadastrar</button></div>
+    <p class="dica">Uma palavra só, como a equipe chama. Sem telefone, placa ou documento.</p>`;
+  return h;
+}
+// Aba Mapa (Ricardo, 14/11: "você coloca um mapa e vai pingando onde que fica cada um deles, para eu ver se está fazendo sentido a rota").
+// Cada pedido fica no ponto central do bairro (dado público), nunca no endereço do cliente.
+let mapaFoco = "", mapaVista = "pedidos", mapaView = null, vistaAtual = null, mapaSel = "";
+// "Limpar rotas" (Ricardo, 14/11: "Tinha que ter um botão de limpar as rotas"): as saídas escondidas ficam só neste
+// aparelho, do dia de operação; não mexe no despacho. A saída nova aparece sozinha.
+const LIMPO_KEY = "waisorio_mapa_limpo", chaveRua = (r) => `${r.moto}|${r.saiu}`;
+let mapaLimpo = (() => { try { const v = JSON.parse(localStorage.getItem(LIMPO_KEY) || "null"); return v && typeof v.dia === "string" && Array.isArray(v.ids) ? v : {dia: "", ids: []}; } catch (e) { return {dia: "", ids: []}; } })();
+function guardaLimpo() { try { localStorage.setItem(LIMPO_KEY, JSON.stringify(mapaLimpo)); } catch (e) { /* sem armazenamento: vale até recarregar */ } }
+// imagem de fundo: scripts/mapa_fundo.py (OpenStreetMap, 36 peças no zoom 14, baixadas em 14/11/2026)
+// e o zoom 15 em volta da loja (3 km), mais nítido de perto
+const BASE_Z = 14, K_MAX = 6;
+const FUNDOS = [{src: "itajuba_z14.png", z: 14, px0: 1566720, py0: 2364416, w: 1536, h: 1536},
+  {src: "itajuba_z15.png", z: 15, px0: 3134464, py0: 4729600, w: 1536, h: 1792}];
+function abaMapa() {
+  if (!D || !D.mapa || !Array.isArray(D.mapa.bairros) || !Array.isArray(D.mapa.loja)) return `<div class="vazio" style="margin-top:16px">O mapa aparece na próxima rodada do agente.</div>`;
+  const loja = D.mapa.loja, bairros = D.mapa.bairros;
+  const rotas = [];
+  for (const s of Array.isArray(D.saidas) ? D.saidas : []) rotas.push({moto: s.moto, cor: Number(s.cor) || 0, tipo: s.quando, paradas: Array.isArray(s.paradas) ? s.paradas : [],
+    txt: s.quando === "agora" ? "sai já" : s.quando === "espera" ? `sai ${s.sai}` : `quando voltar, sai ~${s.sai}`});
+  // na rua: só o que ainda não foi entregue; quem já entregou tudo está voltando e sai do mapa (Ricardo, 14/11:
+  // "o mapa tá ficando tudo cheio de coisa [...] Já saiu todas as entregas"); "Limpar rotas" esconde o resto
+  if (mapaLimpo.dia !== D.dia) mapaLimpo = {dia: D.dia, ids: []};
+  const escondidas = new Set(mapaLimpo.ids), voltando = [];
+  let nEsc = 0;
+  for (const r of Array.isArray(D.rua) ? D.rua : []) {
+    const abertas = (Array.isArray(r.paradas) ? r.paradas : []).filter((p) => !p.entregue);
+    if (!abertas.length) { voltando.push(r.moto); continue; }
+    if (escondidas.has(chaveRua(r))) { nEsc++; continue; }
+    rotas.push({moto: r.moto, cor: Number(r.cor) || 0, tipo: "rua", paradas: abertas, txt: `na rua, volta ~${r.volta}`});
+  }
+  const temRua = rotas.some((r) => r.tipo === "rua");
+  const motos = [...new Map(rotas.map((r) => [r.moto, r.cor])).entries()];
+  if (mapaFoco && !motos.some(([m]) => m === mapaFoco)) mapaFoco = "";
+  const vis = rotas.filter((r) => !mapaFoco || r.moto === mapaFoco);
+  const pinos = [], fora = [];
+  vis.forEach((r) => r.paradas.forEach((p, i) => (typeof p.lat === "number" && typeof p.lon === "number" ? pinos : fora).push({r, p, i})));
+  // enquadramento: os pedidos e a loja, ou a cidade toda
+  // projeção do mapa (Web Mercator, pixels do zoom 14), para os pontos caírem no lugar certo da imagem
+  const n = 256 * 2 ** BASE_Z, mx = (lon) => (lon + 180) / 360 * n;
+  const my = (lat) => { const s = Math.sin(lat * Math.PI / 180); return (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n; };
+  const mpp = 156543.034 / 2 ** BASE_Z * Math.cos(loja[0] * Math.PI / 180);  // metros por pixel do zoom 14
+  const W = Math.round(Math.max(288, Math.min(1248, ($("app").clientWidth || 360) - 32)));
+  const H = Math.round(Math.max(320, Math.min(W * 0.85, innerHeight * 0.7)));
+  const PAD = 36, LX = mx(loja[1]), LY = my(loja[0]);
+  const vista = mapaVista === "pedidos" && !pinos.length ? "loja" : mapaVista;
+  let cx, cy, k;
+  if (vista === "livre" && mapaView) ({cx, cy, k} = mapaView);
+  else if (vista === "loja") { cx = LX; cy = LY; k = Math.min(W, H) / (2 * 5000 / mpp) * 1.04; }  // cabe o círculo de 5 km
+  else {
+    const pts = [loja, ...pinos.map((x) => [x.p.lat, x.p.lon])], MIN = 1500 / mpp;  // ~1,5 km no mínimo
+    let x0 = Math.min(...pts.map((p) => mx(p[1]))), x1 = Math.max(...pts.map((p) => mx(p[1])));
+    let y0 = Math.min(...pts.map((p) => my(p[0]))), y1 = Math.max(...pts.map((p) => my(p[0])));
+    if (x1 - x0 < MIN) { const d = (MIN - (x1 - x0)) / 2; x0 -= d; x1 += d; }
+    if (y1 - y0 < MIN) { const d = (MIN - (y1 - y0)) / 2; y0 -= d; y1 += d; }
+    k = Math.min((W - 2 * PAD) / (x1 - x0), (H - 2 * PAD) / (y1 - y0));
+    cx = (x0 + x1) / 2; cy = (y0 + y1) / 2;
+  }
+  k = Math.max(Math.min(W, H) / (2 * 7500 / mpp), Math.min(K_MAX, k));
+  if (vista === "livre" && mapaView) {  // arrastando: o centro da tela não sai da imagem da cidade
+    const F0 = FUNDOS[0];
+    cx = Math.min(F0.px0 + F0.w, Math.max(F0.px0, cx)); cy = Math.min(F0.py0 + F0.h, Math.max(F0.py0, cy));
+    mapaView = {cx, cy, k};
+  }
+  vistaAtual = {cx, cy, k};
+  const X = (lon) => W / 2 + (mx(lon) - cx) * k, Y = (lat) => H / 2 + (my(lat) - cy) * k;
+  // pedidos no mesmo bairro: em volta do ponto, para não ficarem um em cima do outro
+  const lx = X(loja[1]), ly = Y(loja[0]), perto = (x, y, d) => Math.hypot(x - lx, y - ly) < d;
+  const grupos = {};
+  pinos.forEach((x) => { (grupos[x.p.lat + "," + x.p.lon] ||= []).push(x); });
+  for (const g of Object.values(grupos)) {
+    let gx = X(g[0].p.lon), gy = Y(g[0].p.lat);
+    if (perto(gx, gy, 30)) { gx = lx + 30; gy = ly + 26; }  // bairro da loja: os pontos vão para o lado, sem cobrir a loja
+    g.forEach((x, j) => {
+      const a = -Math.PI / 2 + (2 * Math.PI * j) / g.length, raio = g.length > 1 ? 15 : 0;
+      x.x = gx + raio * Math.cos(a); x.y = gy + raio * Math.sin(a); x.desce = g.length > 1 ? 30 : 16;
+    });
+  }
+  const desce = {};
+  pinos.forEach((x) => { desce[x.p.bairro] = Math.max(desce[x.p.bairro] || 0, x.desce); });
+  const comPino = new Set(pinos.map((x) => x.p.bairro));
+  const dentro = (x, y) => x > -20 && x < W + 20 && y > -20 && y < H + 20;
+  let svg = FUNDOS.filter((F) => F.z === BASE_Z || k >= 0.9).map((F) => { const f = 2 ** (F.z - BASE_Z);
+    return `<image class="fundo" href="${F.src}" x="${(W / 2 + (F.px0 / f - cx) * k).toFixed(1)}" y="${(H / 2 + (F.py0 / f - cy) * k).toFixed(1)}" width="${(F.w / f * k).toFixed(1)}" height="${(F.h / f * k).toFixed(1)}" preserveAspectRatio="none"/>`; }).join("");
+  for (const [km, rot] of [[1, "1 km · prazo 29 min"], [5, "5 km"]]) {  // anéis em volta da loja (o de 1 km é o corte do prazo)
+    const r = km * 1000 / mpp * k;
+    svg += `<circle cx="${(W / 2 + (LX - cx) * k).toFixed(1)}" cy="${(H / 2 + (LY - cy) * k).toFixed(1)}" r="${r.toFixed(1)}" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="6 6" opacity=".55"/>
+      <text x="${(W / 2 + (LX - cx) * k).toFixed(1)}" y="${(H / 2 + (LY - cy) * k - r - 5).toFixed(1)}" font-size="11" font-weight="700" text-anchor="middle" fill="var(--ink)" stroke="var(--card)" stroke-width="3.5" paint-order="stroke">${rot}</text>`;
+  }
+  for (const [nome, la, lo] of bairros) {
+    const x = X(lo), y = Y(la);
+    if (!dentro(x, y) || perto(x, y, 12)) continue;
+    svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.5" fill="var(--muted)" opacity=".5"><title>${esc(nome)}</title></circle>`;
+    if ((k >= 0.55 || comPino.has(nome)) && !perto(x, y, 30)) svg += `<text x="${x.toFixed(1)}" y="${(y + (desce[nome] || 0) + 13).toFixed(1)}" font-size="11" text-anchor="middle" fill="var(--ink)" stroke="var(--card)" stroke-width="3.5" paint-order="stroke"${comPino.has(nome) ? ` font-weight="700"` : ""}>${esc(nome)}</text>`;
+  }
+  const km = (1000 / mpp) * k, passo = km > W * 0.4 ? 0.5 : 1;  // escala de 1 km (ou 500 m)
+  svg += `<text x="${W - 8}" y="${H - 8}" font-size="10" text-anchor="end" fill="var(--ink)" stroke="var(--card)" stroke-width="3.5" paint-order="stroke">© OpenStreetMap</text>`;
+  svg += `<g transform="translate(14 ${H - 16})"><line x1="0" y1="0" x2="${(km * passo).toFixed(1)}" y2="0" stroke="var(--muted)" stroke-width="2"/><line x1="0" y1="-4" x2="0" y2="4" stroke="var(--muted)" stroke-width="2"/><line x1="${(km * passo).toFixed(1)}" y1="-4" x2="${(km * passo).toFixed(1)}" y2="4" stroke="var(--muted)" stroke-width="2"/><text x="${(km * passo / 2).toFixed(1)}" y="-7" font-size="11" text-anchor="middle" fill="var(--ink)" stroke="var(--card)" stroke-width="3.5" paint-order="stroke">${passo === 1 ? "1 km" : "500 m"}</text></g>`;
+  for (const r of vis) {
+    const seq = pinos.filter((x) => x.r === r).sort((a, b) => a.i - b.i);
+    if (!seq.length) continue;
+    const linha = [[lx, ly], ...seq.map((x) => [x.x, x.y])].map((p) => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
+    const estilo = r.tipo === "rua" ? `stroke-width="3" stroke-dasharray="7 6" opacity=".8"` : r.tipo === "depois" ? `stroke-width="3" opacity=".45"` : `stroke-width="4"`;
+    svg += `<polyline points="${linha}" fill="none" stroke="var(--m${r.cor})" stroke-linecap="round" stroke-linejoin="round" ${estilo}/>`;
+  }
+  svg += `<g><rect x="${(lx - 10).toFixed(1)}" y="${(ly - 10).toFixed(1)}" width="20" height="20" rx="5" fill="var(--ink)"/><text x="${lx.toFixed(1)}" y="${(ly + 4).toFixed(1)}" font-size="12" font-weight="800" text-anchor="middle" fill="var(--card)">L</text>
+    <text x="${(lx + 14).toFixed(1)}" y="${(ly - 10).toFixed(1)}" font-size="12" font-weight="800" fill="var(--ink)" stroke="var(--card)" stroke-width="3.5" paint-order="stroke">Loja</text></g>`;
+  const desenha = (x) => {
+    const sel = mapaSel === x.p.ref, rua = x.r.tipo === "rua", c = `var(--m${x.r.cor})`, rr = sel ? 15 : 12;
+    const rot = `${x.p.rotulo} ${x.p.num_fim}, ${x.p.bairro}, ${x.r.moto}, ${x.i + 1}º da saída`;
+    return `<g class="pino" data-pin="${esc(x.p.ref)}" tabindex="0" role="button" aria-label="${esc(rot)}">
+      ${sel ? `<circle cx="${x.x.toFixed(1)}" cy="${x.y.toFixed(1)}" r="${rr + 5}" fill="none" stroke="${c}" stroke-width="2" opacity=".5"/>` : ""}
+      <circle class="borda" cx="${x.x.toFixed(1)}" cy="${x.y.toFixed(1)}" r="${rr}" fill="${rua ? "var(--card)" : c}" stroke="${rua ? c : "var(--card)"}" stroke-width="${rua ? 3 : 2}"${x.r.tipo === "depois" ? ` opacity=".6"` : ""}/>
+      <text x="${x.x.toFixed(1)}" y="${(x.y + 4.5).toFixed(1)}" font-size="13" font-weight="800" text-anchor="middle" fill="${rua ? c : "var(--pin-ink)"}">${x.i + 1}</text></g>`;
+  };
+  svg += pinos.filter((x) => x.p.ref !== mapaSel).map(desenha).join("") + pinos.filter((x) => x.p.ref === mapaSel).map(desenha).join("");
+  let h = `<div class="mapa-ctl"><button class="fil${mapaFoco ? "" : " ativo"}" data-foco="">Todos</button>
+    ${motos.map(([m, c]) => `<button class="fil${mapaFoco === m ? " ativo" : ""}" data-foco="${esc(m)}"><span class="pt" style="background:var(--m${c})"></span>${esc(m)}</button>`).join("")}
+    ${temRua ? `<button class="fil" data-limpar="1">Limpar rotas</button>` : ""}${nEsc ? `<button class="fil" data-limpar="0">Mostrar ${nEsc} na rua</button>` : ""}
+    <span class="vao"></span><span class="zoom"><button class="fil${vista === "pedidos" ? " ativo" : ""}" data-zoom="pedidos">Pedidos</button><button class="fil${vista === "loja" ? " ativo" : ""}" data-zoom="loja">Loja · 5 km</button>
+    <button class="fil" data-zoom="menos" aria-label="Afastar">−</button><button class="fil" data-zoom="mais" aria-label="Aproximar">+</button></span></div>`;
+  h += `<svg class="mapa" viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa dos pedidos por bairro. Arraste para mover; + e − para o zoom.">${svg}</svg>`;
+  const s = pinos.find((x) => x.p.ref === mapaSel);
+  if (s) {
+    const p = s.p;
+    h += `<div class="info-pino" style="--c: var(--m${s.r.cor})"><b>${esc(p.nome_canal)} ${esc(p.num)}</b> · ${esc(p.bairro)}<br>${esc(s.r.moto)} · ${s.i + 1}º da saída · ${esc(s.r.txt)}${p.chega ? ` · chega ~${esc(p.chega)}` : ""} · prazo ${esc(p.prazo)}${p.atraso ? ` · <b style="color:var(--late)">atrasa ${Number(p.atraso)} min</b>` : ""}</div>`;
+  } else if (pinos.length) h += `<p class="dica">Toque num ponto para ver o pedido. Toque no nome do motoboy para ver só a rota dele.</p>`;
+  if (!rotas.length) h += `<div class="vazio" style="margin-top:10px">${nEsc ? "Rotas limpas. A próxima saída aparece aqui sozinha." : "Nenhum pedido esperando nem na rua agora."}</div>`;
+  if (voltando.length) h += `<p class="dica">Já entregaram tudo, voltando para a loja: ${voltando.map(esc).join(", ")}. Toque em "voltou" quando chegar.</p>`;
+  if (vis.length) h += `<ul class="trajetos">${vis.map((r) => `<li><span class="pt" style="background:var(--m${r.cor})"></span><b>${esc(r.moto)}</b><span style="color:var(--muted)">${esc(r.txt)}:</span>
+    <span>Loja → ${r.paradas.map((p, i) => `${i + 1} ${esc(p.rotulo)} ${esc(p.num_fim)} (${esc(p.bairro)})`).join(" → ")}</span></li>`).join("")}</ul>`;
+  if (fora.length) h += `<p class="dica">Fora do mapa, sem bairro: ${fora.map((x) => `${esc(x.p.rotulo)} ${esc(x.p.num_fim)} (${esc(x.r.moto)})`).join(", ")}.</p>`;
+  h += `<p class="dica">Cada ponto fica no centro do bairro, não no endereço do cliente. A linha é reta, só para mostrar a ordem: a moto vai pela rua. Linha cheia: vai sair; tracejada: já está na rua; clara: sai quando voltar. Pedido entregue sai do mapa sozinho; "Limpar rotas" tira as tracejadas (só neste aparelho). Arraste o mapa para mover; + e − (ou dois dedos) para o zoom. Anéis: 1 km da loja (até ele o prazo da comida é 29 min, depois 39) e 5 km.</p>`;
+  return h;
+}
+// Aba Quadro (Ricardo, 14/11: "puxar o produto [...] em três opções: em produção, pronto e despachado [...] em cada motoboy dá para colocar um ou dois ou três pedidos").
+// Arrastar o cartão (no celular: segurar um instante e arrastar) ou tocar no cartão e escolher para onde vai.
+// O toque vira evento; o agente aplica na rodada. Até lá, a tela já mostra o cartão no lugar novo.
+let selQ = "", arr = null, semClique = false;
+function estadoQuadro() {
+  const cards = new Map((D && Array.isArray(D.quadro) ? D.quadro : []).map((c) => [c.ref, {...c}]));
+  const desp = [];
+  for (const e of pendentes().slice().sort((a, b) => (a.criado || 0) - (b.criado || 0))) {
+    for (const r of Array.isArray(e.pedidos) ? e.pedidos : []) {
+      const c = cards.get(r);
+      if (!c) continue;
+      if (e.tipo === "fixar") c.fixo = e.moto;
+      else if (e.tipo === "soltar") c.fixo = "";
+      else if (e.tipo === "pronto") c.st = "pronto";
+      else if (e.tipo === "producao") c.st = "producao";
+      else if (e.tipo === "saiu") { cards.delete(r); desp.push({moto: e.moto, c}); }
+    }
+  }
+  return {cards: [...cards.values()], desp};
+}
+const corDe = (m) => { const x = (D && Array.isArray(D.motoboys) ? D.motoboys : []).find((y) => y.nome === m); return x ? Number(x.cor) || 0 : 0; };
+// 14/11 18h12 (Ricardo: "a gente pode chegar no acordo de sugerir [...] eu mesmo que vou ter que colocar as entregas
+// pra cada motoboy [...] Você pode sugerir as entregas aí"): a sugestão fica no cartão (sai já ou a hora, sozinho ou
+// junto com quais), sem dono; quem põe o pedido na caixa do motoboy é a loja
+let GRUPOS = new Map();
+const chaveGrupo = (c) => c.sug.moto + "|" + c.sug.sai;
+function sugTxt(c) {
+  if (c.fixo || !c.sug) return "";
+  const junto = (GRUPOS.get(chaveGrupo(c)) || []).filter((x) => x.ref !== c.ref);
+  // comida só fica pronta com o Despachar da cozinha (Ricardo, 14/11: "Quando a cozinha colocar despachado, quer dizer que tá pronto")
+  const quando = c.sug.quando === "agora" ? "sai já" : (c.falta_despachar || junto.some((x) => x.falta_despachar)) ? "sai quando despachar" : `sai ~${esc(c.sug.sai)}`;
+  return `<div class="sug">sugestão: ${quando}${junto.length ? ` junto com ${junto.map((x) => `${canalTxt(x)}${esc(x.num_fim)} (${esc(x.bairro)})`).join(" e ")} · ${Number(c.sug.ordem) || 1}º a entregar` : ", sozinho"}</div>`;
+}
+function cartaoQ(c) {
+  const sug = sugTxt(c);
+  const quando = c.st === "producao" ? (c.falta_despachar ? `falta despachar (estimado ~${esc(c.pronto_hora)})` : `pronto ~${esc(c.pronto_hora)}`) : c.pronto_real ? "pronto" : `pronto (estimado ${esc(c.pronto_hora)})`;
+  return `<div class="cartao${selQ === c.ref ? " sel" : ""}" data-ref="${esc(c.ref)}" tabindex="0" role="button" aria-label="${esc(c.nome_canal + " " + c.num + ", " + c.bairro)}">
+    <div class="l1">${canalTxt(c)}${numero(c)}${c.gelado ? `<span title="gelado">❄</span>` : ""}</div>
+    <div class="l2">${c.bairro_ok ? esc(c.bairro) : `<span class="semb">${esc(c.bairro)}</span>`} · prazo ${esc(c.prazo)} · ${quando}</div>${sug}</div>`;
+}
+// a próxima saída sugerida de cada motoboy já fica na caixa dele (Ricardo, 14/11: "A rota sugerida você já deixa lá,
+// ela já vai funcionar no quadro [...] Se a gente quiser alterar [...] a gente muda")
+const chaveSai = (h) => (String(h) < "05:00" ? "2" : "1") + h;  // depois da meia-noite vem depois
+function caixas(cards, motos) {
+  const out = new Map();
+  for (const m of motos) {
+    const fixos = cards.filter((c) => c.fixo === m.nome), sug = [];  // 14/11 18h12: a caixa só tem o que a loja pôs
+    out.set(m.nome, {m, fixos, sug, refs: fixos.map((c) => c.ref)});
+  }
+  return out;
+}
+const caixaDo = (cx, ref) => [...cx.values()].find((b) => b.refs.includes(ref));
+function abaQuadro() {
+  if (!D) return `<div class="vazio" style="margin-top:16px">O quadro aparece na próxima rodada do agente.</div>`;
+  const {cards, desp} = estadoQuadro(), max = Number(D.max_saida) || 3;
+  const motos = motosAtuais();
+  GRUPOS = new Map();
+  for (const c of cards) if (!c.fixo && c.sug) (GRUPOS.get(chaveGrupo(c)) || GRUPOS.set(chaveGrupo(c), []).get(chaveGrupo(c))).push(c);
+  const col = (zona, titulo, lista, vazio) => `<section class="col" data-zona="${zona}"><h3>${titulo}<span class="qtd">${lista.length}</span></h3>
+    ${lista.length ? lista.map((c) => cartaoQ(c)).join("") : `<div class="vaga" style="border:1px dashed var(--line);border-radius:8px;padding:10px;color:var(--muted);font-size:14px">${vazio}</div>`}</section>`;
+  const cx = caixas(cards, motos);
+  const livres = cards.filter((c) => !c.fixo);
+  // pausar e ativar no próprio quadro (Ricardo, 14/11 18h13: "eu tinha que conseguir atualizar, pausar os motoboys e
+  // ativar eles, porque às vezes o motoboy chegou, outro não tá"): é o mesmo tirar e pôr no turno da aba Motoboys
+  const pend = new Map();
+  for (const e of pendentes()) {
+    if (e.tipo === "entrou") pend.set(e.nome, "ativando…");
+    if (e.tipo === "saiu_turno") pend.set(e.moto, "pausando…");
+  }
+  const ativosQ = new Set(motos.map((m) => m.nome));
+  const pausados = [...new Set(cadastro.map((c) => c.nome))].filter((n) => !ativosQ.has(n)).sort((a, b) => a.localeCompare(b, "pt"));
+  let h = `<div class="quadro">`;
+  h += col("producao", "Em produção", livres.filter((c) => c.st === "producao"), "Nada em produção.");
+  h += col("pronto", "Pronto", livres.filter((c) => c.st !== "producao"), "Nada pronto esperando motoboy.");
+  h += `<section class="col"><h3>Motoboys</h3>${motos.length ? motos.map((m) => {
+    const b = cx.get(m.nome), meus = b.fixos, todos = meus;
+    const onde = m.onde === "loja" ? "na loja" : m.onde === "fora" ? "fora da loja" : `na rua até ~${esc(m.volta)}`;
+    // 14/11 (Ricardo: "a gente pode falar que não está na loja também"): "Não está na loja" tira da sugestão até o "Está na loja"
+    const btVolta = m.onde !== "loja" ? `<div class="acoes">${botao("voltouq " + m.nome, "Está na loja", `Confirmar: ${m.nome} voltou para a loja`, {tipo: "voltou", moto: m.nome}, "pouco")}</div>`
+      : `<div class="acoes">${botao("foraq " + m.nome, "Não está na loja", `Confirmar: ${m.nome} não está na loja`, {tipo: "fora", moto: m.nome}, "pouco")}</div>`;
+    const gelo = todos.some((c) => c.comida) && todos.some((c) => c.gelado && !c.pequeno);
+    return `<div class="caixa" data-zona="moto:${esc(m.nome)}" style="--c: var(--m${Number(m.cor) || 0})">
+      <header><span class="pt" style="background:var(--m${Number(m.cor) || 0})"></span><b>${esc(m.nome)}</b><span class="onde">${onde}</span><span class="cont">${todos.length}/${max}</span></header>
+      ${meus.map((c) => cartaoQ(c)).join("")}
+      ${gelo ? `<div class="gelo">❄ Lanche com gelado: só se a bebida for pequena, no compartimento de cima</div>` : ""}
+      ${todos.length < max ? `<div class="vaga">${todos.length ? "Arraste para trocar ou pôr mais" : "Arraste o pedido para cá"}</div>` : ""}
+      ${todos.length ? `<div class="acoes">${botao("saiuq " + m.nome, `${m.nome} saiu`, `Confirmar: ${m.nome} saiu com ${todos.length}`, {tipo: "saiu", moto: m.nome, pedidos: b.refs})}</div>` : btVolta}
+      ${pend.has(m.nome) ? `<div class="sugere">${esc(pend.get(m.nome))}</div>` : `<div class="acoes">${botao("pausa " + m.nome, "Pausar", `Confirmar: pausar ${m.nome} (sai do turno)`, {tipo: "saiu_turno", moto: m.nome}, "pouco")}</div>`}
+    </div>`;
+  }).join("") : `<div class="vazio">Ninguém ativo. Ative abaixo ou na aba Motoboys.</div>`}
+    ${pausados.length ? `<div class="pausados"><b>Pausados</b>${pausados.map((nome) => pend.has(nome) ? `<span class="chip">${esc(nome)} · ${esc(pend.get(nome))}</span>`
+      : `<button class="fil" data-um="1" data-ev="${esc(JSON.stringify({tipo: "entrou", nome}))}">${esc(nome)} ▶ Ativar</button>`).join("")}</div>` : ""}</section>`;
+  const ruaL = Array.isArray(D.rua) ? D.rua : [];
+  // entrega do iFood (parceira ou sob demanda): o agente marca sozinho pela leitura do Gestor; o cartão não se mexe
+  // (Ricardo, 14/11 12h20: "você não pode deixar a gente ficar movendo ela [...] ele só fica nos status")
+  const parc = Array.isArray(D.parceiras) ? D.parceiras : [];
+  const parcH = parc.length ? `<div class="grupo-ifood"><b>Quem leva é o iFood</b><span class="trava-txt">não se mexe</span>
+    ${parc.map((c) => `<div class="cartao trava" aria-label="${esc(c.nome_canal + " " + c.num + ", " + c.tipo)}">
+      <div class="l1">${canalTxt(c)}${numero(c)}<span class="tag-ifood">${esc(String(c.tipo || "").toUpperCase())}</span></div>
+      <div class="l2">${esc(c.bairro)}${c.prazo ? ` · prazo ${esc(c.prazo)}` : ""} · ${esc(c.st)}</div></div>`).join("")}</div>` : "";
+  h += `<section class="col" data-zona="despachado"><h3>Despachado<span class="qtd">${ruaL.reduce((n, r) => n + (r.paradas || []).length, 0) + desp.length + parc.length}</span></h3>
+    ${parcH}${desp.length ? `<div class="grupo-rua" style="--c: var(--muted)"><b>Anotado, entra na rodada</b><div class="chips">${desp.map((x) => `<span class="chip">${canalTxt(x.c)}${esc(x.c.num_fim)}</span> ${esc(x.moto)}`).join(" ")}</div></div>` : ""}
+    ${ruaL.map((r) => `<div class="grupo-rua" style="--c: var(--m${Number(r.cor) || 0})"><b>${esc(r.moto)}</b> <span style="color:var(--muted);font-size:14px">saiu ${esc(r.saiu)} · volta ~${esc(r.volta)}</span>
+      <div class="chips">${(r.paradas || []).map((p) => `<span class="chip">${canalTxt(p)}${esc(p.num_fim)}</span>`).join("")}</div></div>`).join("")}
+    ${!ruaL.length && !desp.length && !parc.length ? `<div class="vaga" style="border:1px dashed var(--line);border-radius:8px;padding:10px;color:var(--muted);font-size:14px">Ninguém na rua.</div>` : ""}</section>`;
+  h += `</div><p class="dica">O agente só sugere: no cartão diz se sai já, sozinho ou junto com qual. Quem põe o pedido na caixa do motoboy é a loja; depois é tocar em \"saiu\" (vale para qualquer motoboy). \"Está na loja\" avisa que ele voltou; \"Não está na loja\" tira ele da sugestão até voltar. Comida só vai para Pronto quando a cozinha toca em Despachar no Gestor do iFood (ou quando a loja arrasta para Pronto). Para pôr, arraste o cartão (no celular, segure um instante e arraste) ou toque nele e escolha para onde vai. Para o motoboy: até ${max} pedidos; o 1 por saída continua o padrão. Muda na próxima rodada, em até 2 min. Do motoboy para Despachado: ele saiu com todos os pedidos da caixa.</p>`;
+  const s = cards.find((c) => c.ref === selQ);
+  if (s) {
+    const ops = [["producao", "Em produção"], ["pronto", "Pronto"], ...motos.map((m) => ["moto:" + m.nome, m.nome]), ...(caixaDo(cx, s.ref) ? [["despachado", "Despachado"]] : [])];
+    h += `<div class="barra-mover"><span class="rot">${esc(s.rotulo)} ${esc(s.num_fim)} vai para:</span>${ops.map(([z, t]) => `<button class="fil" data-mover="${esc(z)}">${esc(t)}</button>`).join("")}<button class="pouco" data-mover="">Cancelar</button></div>`;
+  } else selQ = "";
+  return h;
+}
+function mover(ref, zona) {
+  const {cards} = estadoQuadro(), c = cards.find((x) => x.ref === ref), max = Number(D && D.max_saida) || 3;
+  if (!c || !zona) return;
+  const motos = D && Array.isArray(D.motoboys) ? D.motoboys : [], cx = caixas(cards, motos), b = caixaDo(cx, ref);
+  const nome = `${c.rotulo} ${c.num_fim}`;
+  if (zona === "producao" || zona === "pronto") {
+    const evs = [];
+    if (c.fixo) evs.push({tipo: "soltar", pedidos: [ref]});
+    if ((c.st === "producao") !== (zona === "producao")) evs.push({tipo: zona, pedidos: [ref]});
+    if (evs.length) mandaVarios(evs, `${nome}: ${zona === "producao" ? "em produção" : "pronto"}${c.fixo ? `, saiu da caixa do ${c.fixo}` : ""}.`);
+    else if (b) aviso(`${nome} é a sugestão do agente para ${b.m.nome}. Para mudar, arraste para outro motoboy (ou para Em produção, se não está pronto).`);
+  } else if (zona.startsWith("moto:")) {
+    const m = zona.slice(5);
+    if (c.fixo === m) return;
+    if (!c.fixo && b && b.m.nome === m) return;
+    const ja = cards.filter((x) => x.fixo === m);
+    if (ja.length >= max) { aviso(`${m} já tem ${ja.length}: o máximo por saída é ${max}.`); return; }
+    const junto = ja.concat([c]), gelo = junto.some((x) => x.comida) && junto.some((x) => x.gelado && !x.pequeno);
+    mandaVarios([{tipo: "fixar", moto: m, pedidos: [ref]}], gelo ? `${nome} vai com ${m}. Atenção: lanche com gelado só se a bebida for pequena, em cima da bag.` : `${nome} vai com ${m}.`);
+  } else if (zona === "despachado") {
+    if (!b) { aviso("Arraste primeiro para o motoboy que vai levar."); return; }
+    mandaVarios([{tipo: "saiu", moto: b.m.nome, pedidos: b.refs}], `${b.m.nome} saiu com ${b.refs.length} pedido${b.refs.length > 1 ? "s" : ""}.`);
+  }
+}
+// arrastar com o dedo ou o mouse
+function zonaEm(x, y) { const el = document.elementFromPoint(x, y); const z = el && el.closest("[data-zona]"); return z ? z.dataset.zona : ""; }
+function marcaAlvo(z) { document.querySelectorAll(".alvo").forEach((e) => e.classList.remove("alvo")); if (z) { const e = document.querySelector(`[data-zona="${CSS.escape(z)}"]`); if (e) e.classList.add("alvo"); } }
+function comecaArrasto(x, y) {
+  if (!arr) return;
+  const r = arr.el.getBoundingClientRect();
+  arr.ativo = true; arr.dx = x - r.left; arr.dy = y - r.top;
+  arr.fan = arr.el.cloneNode(true); arr.fan.classList.add("fantasma"); arr.fan.style.width = r.width + "px";
+  document.body.appendChild(arr.fan); arr.el.style.opacity = ".35";
+  if (navigator.vibrate) try { navigator.vibrate(15); } catch (e) {}
+  moveArrasto(x, y);
+}
+function moveArrasto(x, y) { arr.fan.style.transform = `translate(${x - arr.dx}px, ${y - arr.dy}px)`; marcaAlvo(zonaEm(x, y)); }
+function fimArrasto() { if (arr) { clearTimeout(arr.timer); if (arr.fan) arr.fan.remove(); if (arr.el) arr.el.style.opacity = ""; } marcaAlvo(""); arr = null; }
+document.addEventListener("pointerdown", (e) => {
+  const el = e.target.closest && e.target.closest(".cartao[data-ref]");
+  if (!el || e.target.closest("button") || (e.pointerType === "mouse" && e.button !== 0)) return;
+  arr = {ref: el.dataset.ref, el, x0: e.clientX, y0: e.clientY, ativo: false, toque: e.pointerType !== "mouse"};
+  if (arr.toque) arr.timer = setTimeout(() => { if (arr && !arr.ativo) comecaArrasto(arr.x0, arr.y0); }, 280);
+});
+document.addEventListener("pointermove", (e) => {
+  if (!arr) return;
+  if (!arr.ativo) {
+    const d = Math.hypot(e.clientX - arr.x0, e.clientY - arr.y0);
+    if (arr.toque) { if (d > 10) fimArrasto(); return; }  // o dedo andou antes de segurar: é rolagem
+    if (d < 6) return;
+    comecaArrasto(e.clientX, e.clientY);
+  }
+  moveArrasto(e.clientX, e.clientY);
+});
+document.addEventListener("pointerup", (e) => {
+  if (!arr) return;
+  if (arr.ativo) { const ref = arr.ref, z = zonaEm(e.clientX, e.clientY); fimArrasto(); semClique = true; setTimeout(() => { semClique = false; }, 400); if (z) mover(ref, z); }
+  else fimArrasto();
+});
+document.addEventListener("pointercancel", fimArrasto);
+document.addEventListener("touchmove", (e) => { if (arr && arr.ativo) e.preventDefault(); }, {passive: false});
+document.addEventListener("contextmenu", (e) => { if (e.target.closest && e.target.closest(".cartao")) e.preventDefault(); });
+// mapa: arrastar para mover, dois dedos (ou a roda do mouse) para o zoom
+const toques = new Map(); let pan = null, quadroMapa = 0, semCliqueMapa = false;
+const kLim = (k) => Math.min(K_MAX, Math.max(0.12, k));
+function redesenhaMapa() { if (!quadroMapa) quadroMapa = requestAnimationFrame(() => { quadroMapa = 0; montar(); }); }
+function basePan() {
+  const el = document.querySelector("svg.mapa"); if (!el || !vistaAtual) { pan = null; return; }
+  const r = el.getBoundingClientRect();
+  pan = {v: {...vistaAtual}, r, esc: el.viewBox.baseVal.width / r.width, W: el.viewBox.baseVal.width, H: el.viewBox.baseVal.height,
+    ini: new Map([...toques].map(([id, p]) => [id, {...p}])), mexeu: pan ? pan.mexeu : false};
+}
+document.addEventListener("pointerdown", (e) => {
+  if (aba() !== "mapa" || !e.target.closest || !e.target.closest("svg.mapa")) return;
+  toques.set(e.pointerId, {x: e.clientX, y: e.clientY}); basePan();
+});
+document.addEventListener("pointermove", (e) => {
+  if (!pan || !toques.has(e.pointerId)) return;
+  toques.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  const ids = [...pan.ini.keys()].filter((id) => toques.has(id)), v = pan.v;
+  const tela = (p) => ({x: (p.x - pan.r.left) * pan.esc - pan.W / 2, y: (p.y - pan.r.top) * pan.esc - pan.H / 2});
+  let cx, cy, k;
+  if (ids.length >= 2) {
+    const a0 = pan.ini.get(ids[0]), b0 = pan.ini.get(ids[1]), a1 = toques.get(ids[0]), b1 = toques.get(ids[1]);
+    k = kLim(v.k * (Math.hypot(a1.x - b1.x, a1.y - b1.y) / (Math.hypot(a0.x - b0.x, a0.y - b0.y) || 1)));
+    const m0 = tela({x: (a0.x + b0.x) / 2, y: (a0.y + b0.y) / 2}), m1 = tela({x: (a1.x + b1.x) / 2, y: (a1.y + b1.y) / 2});
+    cx = v.cx + m0.x / v.k - m1.x / k; cy = v.cy + m0.y / v.k - m1.y / k;
+  } else if (ids.length === 1) {
+    const p0 = pan.ini.get(ids[0]), p1 = toques.get(ids[0]);
+    if (!pan.mexeu && Math.hypot(p1.x - p0.x, p1.y - p0.y) < 6) return;
+    k = v.k; cx = v.cx - (p1.x - p0.x) * pan.esc / k; cy = v.cy - (p1.y - p0.y) * pan.esc / k;
+  } else return;
+  pan.mexeu = true; mapaView = {cx, cy, k}; mapaVista = "livre"; redesenhaMapa();
+});
+function soltaPan(e) {
+  if (!toques.has(e.pointerId)) return;
+  toques.delete(e.pointerId);
+  if (toques.size) { basePan(); return; }
+  if (pan && pan.mexeu) { semCliqueMapa = true; setTimeout(() => { semCliqueMapa = false; }, 350); }
+  pan = null;
+}
+document.addEventListener("pointerup", soltaPan);
+document.addEventListener("pointercancel", soltaPan);
+document.addEventListener("wheel", (e) => {
+  const el = e.target.closest && e.target.closest("svg.mapa"); if (!el || !vistaAtual) return;
+  e.preventDefault();
+  const r = el.getBoundingClientRect(), esc = el.viewBox.baseVal.width / r.width, v = vistaAtual;
+  const m = {x: (e.clientX - r.left) * esc - el.viewBox.baseVal.width / 2, y: (e.clientY - r.top) * esc - el.viewBox.baseVal.height / 2};
+  const k = kLim(v.k * (e.deltaY < 0 ? 1.2 : 1 / 1.2));
+  mapaView = {cx: v.cx + m.x / v.k - m.x / k, cy: v.cy + m.y / v.k - m.y / k, k}; mapaVista = "livre"; redesenhaMapa();
+}, {passive: false});
+function motosAtuais() {  // a tela já mostra o toque "Não está na loja" / "Está na loja" antes da rodada
+  const motos = (D && Array.isArray(D.motoboys) ? D.motoboys : []).map((m) => ({...m}));
+  for (const e of pendentes().slice().sort((a, b) => (a.criado || 0) - (b.criado || 0))) {
+    const m = motos.find((x) => x.nome === e.moto);
+    if (m && e.tipo === "fora") m.onde = "fora";
+    if (m && e.tipo === "voltou") m.onde = "loja";
+  }
+  return motos;
+}
+// Aba Painel (Ricardo, 14/11 ~21h, com o print do Gestor do iFood: "Tenta fazer um painel inicial, que nem essa forma aqui
+// que tá o do iFood [...] mostra quais pedidos estão sendo linkados com quais [...] você pode colocar o motoboy também";
+// "Tem que ficar de fácil entendimento"). Colunas como o Gestor; cada moldura é um motoboy, na cor dele; 🔗 = vão juntos.
+// Do cliente, só o nº e o bairro (o Gestor mostra o nome; aqui não).
+const CANAL_P = {"iFood-B": ["🍔", "Burger", "iFood"], "iFood-M": ["🍱", "Marmita", "iFood"], "iFood-K": ["🍦", "Kibon", "iFood"],
+  "iFood-D": ["🥤", "Bebidas", "iFood"], "Ze": ["🍺", "Zé", "Delivery"], "CW-B": ["🍔", "Burger", "Site"], "CW-M": ["🍱", "Marmita", "Site"],
+  "Anota": ["🧾", "Anota AI", ""], "P": ["📞", "Particular", ""]};
+function faltam(hm) {  // minutos daqui até HH:MM (com a virada da meia-noite); no exemplo, conta da hora do exemplo
+  const m = /^(\d{1,2}):(\d{2})$/.exec(String(hm || ""));
+  if (!m) return null;
+  const b = D && D.replay ? /^(\d{1,2}):(\d{2})$/.exec(String(D.agora || "")) : null;
+  const n = new Date(), agora = b ? Number(b[1]) * 60 + Number(b[2]) : n.getHours() * 60 + n.getMinutes();
+  let d = Number(m[1]) * 60 + Number(m[2]) - agora;
+  if (d < -720) d += 1440; else if (d > 720) d -= 1440;
+  return d;
+}
+function chipPrazo(hm) {
+  const f = faltam(hm);
+  if (f === null) return "";
+  return f < 0 ? `<span class="pz late">atrasado ${-f} min</span>` : `<span class="pz${f <= 10 ? " warn" : ""}">faltam ${f} min</span>`;
+}
+function cartaoP(p, rodape, vai) {
+  const [ic, nome, sub] = CANAL_P[p.canal] || ["", p.rotulo || p.canal, ""];
+  const alvo = vai ? ` data-vai="${esc(p.ref)}" tabindex="0" role="button" aria-label="${esc(`${p.nome_canal || nome} ${p.num}, ${p.bairro}: mexer no Quadro`)}"` : "";
+  return `<div class="pc${p.entregue ? " feito" : ""}"${alvo}>
+    <div class="pc-canal ${esc(p.canal)}"><span aria-hidden="true">${ic}</span> ${esc(nome)}${sub ? ` <small>${esc(sub)}</small>` : ""}</div>
+    <div class="pc-num">${esc(p.num_fim)}${p.gelado ? `<span class="gel" title="gelado">❄</span>` : ""}</div>
+    <div class="pc-b${p.bairro_ok === false ? " semb" : ""}">${esc(p.bairro)}</div>${rodape}</div>`;
+}
+function rodapeQ(c) {
+  const st = c.st === "producao" ? `<span class="st2">${c.falta_despachar ? "falta despachar" : `pronto ~${esc(c.pronto_hora)}`}</span>` : `<span class="st2 ok">✓ pronto</span>`;
+  return `<div class="pc-pe">${st}${chipPrazo(c.prazo)}</div>`;
+}
+function abaPainel() {
+  if (!D) return `<div class="vazio" style="margin-top:16px">${semRede ? "Sem resposta do servidor ainda. Confira a internet da loja; a tela continua tentando." : "Esperando a primeira rodada do agente. Quando ele ler os pedidos do iFood e do Zé, aparecem aqui em preparo, prontos e em rota, com o motoboy de cada um."}</div>`;
+  const {cards, desp} = estadoQuadro(), motos = motosAtuais();
+  // grupos: o que a loja pôs na caixa do motoboy, o que o agente sugere junto (mesmo motoboy e mesma saída) e o que está sem motoboy
+  const grupos = new Map();
+  for (const c of cards) {
+    const k = c.fixo ? "fixo|" + c.fixo : c.sug ? "sug|" + c.sug.moto + "|" + c.sug.sai : "sem|" + (c.st === "producao" ? "producao" : "pronto");
+    (grupos.get(k) || grupos.set(k, []).get(k)).push(c);
+  }
+  const molduras = [...grupos.entries()].map(([k, lista]) => {
+    const tipo = k.split("|")[0], moto = tipo === "fixo" ? lista[0].fixo : tipo === "sug" ? lista[0].sug.moto : "";
+    lista.sort((a, b) => ((a.sug && a.sug.ordem) || 9) - ((b.sug && b.sug.ordem) || 9));
+    const com = lista.find((c) => c.sug), s = com ? com.sug : null;
+    const pronto = lista.every((c) => c.st !== "producao"), falta = lista.some((c) => c.falta_despachar);
+    const quando = tipo === "sem" || !s ? "" : s.quando === "agora" ? `<span class="ja">SAI JÁ</span>`
+      : falta ? `<span class="q">sai quando despachar</span>` : `<span class="q">sai ~${esc(s.sai)}</span>`;
+    const junto = lista.length > 1 ? `🔗 ${lista.length} juntos` : "sozinho";
+    const head = tipo === "sem" ? `<b>Sem motoboy livre</b><span class="q">${pronto ? "esperando motoboy" : "em preparo"}</span>`
+      : `<span class="dot"></span><b>${esc(moto)}</b><span class="q">${tipo === "fixo" ? "na caixa · " : ""}${junto}</span>${quando}${tipo === "sug" ? `<span class="tag">sugestão</span>` : ""}`;
+    return {col: pronto ? "pronto" : "preparo", n: lista.length,
+      ordem: (s && s.quando === "agora" ? "0" : "1") + (tipo === "sem" ? "9" : s ? chaveSai(s.sai) : "8") + moto,
+      html: `<section class="mold ${tipo}"${tipo === "sem" ? "" : ` style="${cor(corDe(moto))}"`}><header>${head}</header>
+        <div class="pcs">${lista.map((c) => cartaoP(c, rodapeQ(c), true)).join("")}</div></section>`};
+  });
+  const ord = (a, b) => (a.ordem < b.ordem ? -1 : a.ordem > b.ordem ? 1 : 0);
+  const prep = molduras.filter((g) => g.col === "preparo").sort(ord), pron = molduras.filter((g) => g.col === "pronto").sort(ord);
+  const conta = (l) => l.reduce((s, g) => s + g.n, 0);
+  // em rota: cada saída na rua é uma moldura do motoboy; o "saiu" tocado agora já aparece
+  const ruaL = Array.isArray(D.rua) ? D.rua : [];
+  const saindo = new Map();
+  for (const x of desp) (saindo.get(x.moto) || saindo.set(x.moto, []).get(x.moto)).push(x.c);
+  const rotaH = [...saindo.entries()].map(([m, l]) => `<section class="mold rua" style="${cor(corDe(m))}"><header><span class="dot"></span><b>${esc(m)}</b>
+      <span class="q">${l.length > 1 ? `🔗 ${l.length} juntos · ` : ""}saindo agora</span></header>
+      <div class="pcs">${l.map((c) => cartaoP(c, `<div class="pc-pe">${chipPrazo(c.prazo)}</div>`, false)).join("")}</div></section>`)
+    .concat(ruaL.map((r) => {
+      const ps = Array.isArray(r.paradas) ? r.paradas : [];
+      const tempo = r.tarde ? `<span class="q late">passou da volta (~${esc(r.volta)})</span>` : `<span class="q">saiu ${esc(r.saiu)} · volta ~${esc(r.volta)}</span>`;
+      return `<section class="mold rua" style="${cor(r.cor)}"><header><span class="dot"></span><b>${esc(r.moto)}</b>
+        <span class="q">${ps.length > 1 ? `🔗 ${ps.length} juntos` : "1 pedido"}</span>${tempo}</header>
+        <div class="pcs">${ps.map((p) => cartaoP(p, `<div class="pc-pe">${p.entregue ? `<span class="pz ok">entregue ✓</span>`
+          : p.chega ? `<span class="pz${p.atraso ? " late" : ""}">chega ~${esc(p.chega)}</span>` : chipPrazo(p.prazo)}</div>`, false)).join("")}</div></section>`;
+    }));
+  const nRota = desp.length + ruaL.reduce((s, r) => s + (Array.isArray(r.paradas) ? r.paradas.filter((p) => !p.entregue).length : 0), 0);
+  // entrega do iFood (parceira ou sob demanda): quem leva é o iFood; fica à parte e não mexe (regra 18)
+  const parc = Array.isArray(D.parceiras) ? D.parceiras : [];
+  const parcH = parc.length ? `<section class="mold trava"><header><b>🔒 Entrega iFood</b><span class="q">quem leva é o iFood</span></header>
+      <div class="pcs">${parc.map((r) => cartaoP(r, `<div class="pc-pe"><span class="st2">${esc(r.st)}</span>${r.tipo ? `<span class="pz">${esc(r.tipo)}</span>` : ""}</div>`, false)).join("")}</div></section>` : "";
+  const col = (titulo, n, corpo, vazio) => `<section class="pcol"><h3>${titulo}<span class="qtd">${n}</span></h3>${corpo || `<div class="pvazio">${vazio}</div>`}</section>`;
+  let h = "";
+  const idade = D.gerado_ms ? Math.round((Date.now() - D.gerado_ms) / 60000) : 0;
+  if (D.replay) h += `<p class="aviso">${esc(D.exemplo || "Exemplo com dados de uma noite passada.")}</p>`;
+  else if (idade >= 6) h += `<p class="aviso ruim">O agente não atualiza há ${idade} min. Avise o Ricardo; até lá, despache pelo portal.</p>`;
+  h += `<div class="motos mini">${motos.map((m) => `<span class="moto" style="${cor(m.cor)}"><span class="dot"></span><b>${esc(m.nome)}</b>
+    <span class="onde">${m.onde === "loja" ? "na loja" : m.onde === "fora" ? "fora da loja" : "na rua até ~" + esc(m.volta)}</span></span>`).join("")
+    || `<span class="dica">Ninguém no turno: ponha na aba Motoboys.</span>`}</div>`;
+  h += `<div class="painel">${col("Em preparo", conta(prep), prep.map((g) => g.html).join(""), "Nada em preparo.")}
+    ${col("Pronto", conta(pron), pron.map((g) => g.html).join(""), "Nada pronto esperando motoboy.")}
+    ${col("Em rota", nRota, rotaH.join(""), "Ninguém na rua.")}
+    ${col("Entrega iFood", parc.length, parcH, "Nenhuma agora.")}</div>`;
+  h += `<p class="dica">Cada moldura é um motoboy, na cor dele. 🔗 = pedidos que saem juntos. Moldura tracejada: sugestão do agente; cheia: a loja já pôs na caixa do motoboy ou ele já saiu. Toque num pedido para mexer nele no Quadro.</p>`;
+  return h;
+}
+function montar() {
+  if (arr && arr.ativo) return;  // não redesenha no meio do arrasto
+  topo();
+  document.querySelector("main").classList.toggle("com-barra", aba() === "quadro" && !!selQ);
+  if (aba() === "painel") {
+    $("app").innerHTML = db === false ? `<div class="vazio" style="margin-top:16px">Esta tela só funciona aberta no claude.ai, logada na conta da loja.</div>` : abaPainel();
+    return;
+  }
+  if (aba() === "quadro") {
+    $("app").innerHTML = db === false ? `<div class="vazio" style="margin-top:16px">Esta tela só funciona aberta no claude.ai, logada na conta da loja.</div>` : abaQuadro();
+    return;
+  }
+  if (aba() === "mapa") {
+    $("app").innerHTML = db === false ? `<div class="vazio" style="margin-top:16px">Esta tela só funciona aberta no claude.ai, logada na conta da loja.</div>` : abaMapa();
+    return;
+  }
+  if (aba() === "motoboys") {
+    const foco = document.activeElement && document.activeElement.id === "novo" ? $("novo").value : null;
+    $("app").innerHTML = db === false ? `<div class="vazio" style="margin-top:16px">Esta tela só funciona aberta no claude.ai, logada na conta da loja.</div>` : abaMotoboys();
+    if (foco !== null && $("novo")) { $("novo").value = foco; $("novo").focus(); }
+    return;
+  }
+  if (!D) {
+    $("app").innerHTML = `<div class="vazio" style="margin-top:16px">${semRede ? "Sem resposta do servidor ainda. Confira a internet da loja; a tela continua tentando." : db === false ? "Esta tela só funciona aberta no claude.ai, logada na conta da loja." : "Esperando a primeira rodada do agente. Quando ele ler os pedidos do iFood e do Zé, aparecem aqui quem sai com quais pedidos, em ordem, e quem está na rua."}</div>`;
+    return;
+  }
+  const saidas = Array.isArray(D.saidas) ? D.saidas : [], ruaL = Array.isArray(D.rua) ? D.rua : [];
+  const motos = Array.isArray(D.motoboys) ? D.motoboys : [], atencao = Array.isArray(D.atencao) ? D.atencao : [];
+  let h = "";
+  const idade = D.gerado_ms ? Math.round((Date.now() - D.gerado_ms) / 60000) : 0;
+  if (D.replay) h += `<p class="aviso">${esc(D.exemplo || "Exemplo com dados de uma noite passada.")}</p>`;
+  else if (idade >= 6) h += `<p class="aviso ruim">O agente não atualiza há ${idade} min. Avise o Ricardo; até lá, despache pelo portal.</p>`;
+  const pend = eventos.filter((e) => (e.criado || 0) > (Number(D.eventos_ate) || 0));
+  if (pend.length) h += `<div class="anotados">Anotado, entra na próxima rodada (até 3 min):<ul>${pend.map((e) => `<li>${esc(e.hora)} · ${esc(descreve(e))}</li>`).join("")}</ul></div>`;
+  h += `<div class="motos">${motos.map((m) => `<span class="moto" style="${cor(m.cor)}"><span class="dot"></span><b>${esc(m.nome)}</b>
+    <span class="onde">${m.onde === "loja" ? "na loja" : m.onde === "fora" ? "fora da loja" : "na rua até ~" + esc(m.volta)}</span></span>`).join("")}
+    <a class="pouco" href="#motoboys" style="color:var(--muted);font-size:14px">Mudar o turno →</a></div>`;
+  h += grupo("Sai agora", saidas.filter((s) => s.quando === "agora"), "Ninguém sai agora.");
+  h += grupo("Na loja, esperando o pronto", saidas.filter((s) => s.quando === "espera"));
+  h += grupo("Quando voltar", saidas.filter((s) => s.quando === "depois"));
+  h += ruaL.length ? `<h2>Na rua<span class="qtd">${ruaL.length}</span></h2><div class="rua">${ruaL.map(rua).join("")}</div>` : "";
+  h += atencao.length ? `<h2>Atenção<span class="qtd">${atencao.length}</span></h2><div class="atencao"><ul>${atencao.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>` : "";
+  h += `<footer>Lido às ${esc(D.agora)} · gerado ${esc(D.gerado)}. O Zé sai sozinho pelo celular de quem retira; os botões servem para o iFood, para quem chegou e para corrigir. Pedido aparece só pelo canal, nº e bairro.</footer>`;
+  $("app").innerHTML = h;
+}
+async function cadastrar(bruto) {
+  const nome = String(bruto || "").trim().split(/\s+/)[0] || "";
+  if (!/^[A-Za-zÀ-ÿ']{2,30}$/.test(nome)) { aviso("Escreva uma palavra só: o primeiro nome ou o apelido."); return; }
+  const certo = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+  if (!db) { aviso("Sem conexão com o claude.ai: não cadastrei."); return; }
+  try { await db.collection("motoboys").doc(slug(certo)).set({nome: certo, criado: Date.now()}); aviso(`${certo} cadastrado.`); if ($("novo")) $("novo").value = ""; }
+  catch (e) { aviso("Não deu para cadastrar: esta conta pode só ver. Peça ao Ricardo acesso para mexer."); }
+}
+async function descadastrar(id) {
+  if (!db) return;
+  try { await db.collection("motoboys").doc(id).delete(); aviso("Apagado do cadastro."); }
+  catch (e) { aviso("Não deu para apagar: esta conta pode só ver."); }
+}
+let ultimoCriado = 0;  // eventos em sequência saem em ordem (o agente aplica pelo "criado")
+async function manda(ev, msg) { return mandaVarios([ev], msg); }
+async function mandaVarios(evs, msg) {
+  if (!db) { aviso("Sem conexão com o claude.ai: não anotei."); return; }
+  try {
+    for (const ev of evs) {
+      ultimoCriado = Math.max(Date.now(), ultimoCriado + 1);
+      await db.collection("eventos").add({...ev, hora: hhmm(), criado: ultimoCriado});
+    }
+    aviso((msg ? msg + " " : "Anotado. ") + "Entra na próxima rodada.");
+  } catch (e) {
+    aviso(e && (e.code === "not_granted" || e.code === "permission_denied") ? "Esta conta não pode anotar. Peça ao Ricardo acesso para mexer." : "Não deu para anotar. Tente de novo.");
+  }
+}
+document.addEventListener("click", (e) => {
+  const pin = e.target.closest && e.target.closest("[data-pin]");
+  if (pin) { if (!semCliqueMapa) { mapaSel = mapaSel === pin.dataset.pin ? "" : pin.dataset.pin; montar(); } return; }
+  const vai = e.target.closest && e.target.closest("[data-vai]");
+  if (vai) { selQ = vai.dataset.vai; location.hash = "#quadro"; return; }
+  const b = e.target.closest("button");
+  const cq = !b && e.target.closest(".cartao[data-ref]");
+  if (cq) { if (!semClique) { selQ = selQ === cq.dataset.ref ? "" : cq.dataset.ref; montar(); } return; }
+  if (!b) return;
+  if (b.dataset.mover !== undefined) { const ref = selQ; selQ = ""; if (b.dataset.mover) mover(ref, b.dataset.mover); montar(); return; }
+  if (b.dataset.usar) { mandaVarios([{tipo: "fixar", moto: b.dataset.usar, pedidos: JSON.parse(b.dataset.refs)}], `Sugestão do ${b.dataset.usar} fixada.`); return; }
+  if (b.dataset.foco !== undefined) { mapaFoco = b.dataset.foco; mapaSel = ""; montar(); return; }
+  if (b.dataset.limpar !== undefined) {  // 14/11: "Limpar rotas" esconde as saídas que já estão na rua; "Mostrar" devolve
+    const ids = b.dataset.limpar === "1" ? [...new Set([...mapaLimpo.ids, ...(Array.isArray(D.rua) ? D.rua : []).map(chaveRua)])] : [];
+    mapaLimpo = {dia: D.dia, ids}; guardaLimpo(); mapaSel = ""; mapaFoco = ""; montar(); return; }
+  if (b.dataset.zoom) { const z = b.dataset.zoom;
+    if ((z === "mais" || z === "menos") && vistaAtual) { mapaView = {...vistaAtual, k: vistaAtual.k * (z === "mais" ? 1.5 : 1 / 1.5)}; mapaVista = "livre"; }
+    else if (z === "pedidos" || z === "loja") { mapaVista = z; mapaView = null; }
+    montar(); return; }
+  if (b.id === "cadastrar") { cadastrar($("novo") && $("novo").value); return; }
+  if (b.dataset.cadastrar) { cadastrar(b.dataset.cadastrar); return; }
+  if (b.dataset.um) { manda(JSON.parse(b.dataset.ev)); return; }
+  if (!b.dataset.chave) return;
+  if (armado && armado.chave === b.dataset.chave && Date.now() < armado.ate) {
+    armado = null;
+    const ev = JSON.parse(b.dataset.ev);
+    if (ev.acao === "descadastrar") descadastrar(ev.id); else manda(ev);
+    montar(); return;
+  }
+  armado = {chave: b.dataset.chave, ate: Date.now() + 5000};
+  montar();
+  setTimeout(() => { if (armado && Date.now() >= armado.ate) { armado = null; montar(); } }, 5100);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && e.target && e.target.id === "novo") cadastrar(e.target.value);
+  if ((e.key === "Enter" || e.key === " ") && e.target && e.target.dataset && (e.target.dataset.pin || e.target.dataset.ref || e.target.dataset.vai)) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent("click", {bubbles: true})); }
+  if (e.key === "Escape" && selQ) { selQ = ""; montar(); }
+});
+let medida = null;
+window.addEventListener("resize", () => { clearTimeout(medida); medida = setTimeout(() => { if (aba() === "mapa") montar(); }, 200); });
+document.addEventListener("change", (e) => { const s = e.target; if (s && s.dataset && s.dataset.codigo) { escolha[s.dataset.codigo] = s.value; armado = null; montar(); } });
+window.addEventListener("hashchange", () => { armado = null; montar(); window.scrollTo(0, 0); });
+
+(async () => {
+  const c = window.claude;
+  db = c && c.use ? await c.use("db") : null;
+  if (!db) { db = false; montar(); return; }
+  const espera = setTimeout(() => { if (!carregou) { semRede = true; montar(); } }, 10000);
+  db.doc("painel/atual").onSnapshot((s) => {
+    if (!s.metadata.fromCache) { carregou = true; semRede = false; clearTimeout(espera); }
+    D = s.exists ? s.data() : null; montar();
+  }, () => { clearTimeout(espera); semRede = true; montar(); });
+  db.collection("eventos").orderBy("criado", "desc").limit(30).onSnapshot((q) => {
+    eventos = q.docs.map((d) => d.data()); montar();
+  }, () => {});
+  db.collection("motoboys").onSnapshot((q) => {
+    cadastro = q.docs.map((d) => ({id: d.id, nome: String((d.data() || {}).nome || d.id)})); montar();
+  }, () => {});
+})();
+setInterval(() => { if (D && !D.replay) montar(); }, 60000);  // atualiza o aviso de "não atualiza há X min"
+</script>
+
+</body></html>

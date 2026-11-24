@@ -1,0 +1,19 @@
+[Unit]
+Description=Servidor gerencial do Empório Osório (rotas, simulador, painéis)
+After=network-online.target
+
+[Service]
+User=robo
+WorkingDirectory=/home/robo/app
+EnvironmentFile=/etc/osorio-gerencial.env
+# Um processo só: a tela de rotas espera a mudança do banco dentro do processo. Mais aparelhos = mais threads.
+ExecStart=/home/robo/venv/bin/gunicorn -w 1 -k gthread --threads 32 --timeout 60 -b 127.0.0.1:8080 'gerencial.app:criar()'
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/home/robo/dados
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

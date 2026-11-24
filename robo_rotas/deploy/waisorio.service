@@ -1,0 +1,18 @@
+[Unit]
+Description=Waisorio, tela de rotas do Empório Osório
+After=network-online.target
+
+[Service]
+User=robo
+WorkingDirectory=/home/robo/app
+EnvironmentFile=/etc/waisorio.env
+ExecStart=/usr/bin/python3 -m robo_rotas.servidor
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/home/robo/dados
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
